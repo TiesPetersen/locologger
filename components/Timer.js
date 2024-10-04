@@ -1,21 +1,37 @@
 'use client'
 
-import React from 'react'
+import { usePathname } from 'next/navigation'
+import React, { useState, useEffect } from 'react'
+
 
 export default function Timer() {
-    const locoStart = Date.parse('4 Oct 2024 23:40+02:00')
-    const locoEnd = Date.parse('5 Oct 2024 01:31+02:00')
-    const nowUTC = new Date().getTime()
-  
-    const diff = new Date(locoEnd - nowUTC)
-  
-    let timerState = 'running'
-    if (locoStart > nowUTC) {
-      timerState = 'not started'
+    const [diff, setDiff] = useState(new Date())
+    const [timerState, setTimerState] = useState('running')
+    const pathname = usePathname()
+
+    function updateTimer() {
+        const locoStart = Date.parse('4 Oct 2024 23:40+02:00')
+        const locoEnd = Date.parse('5 Oct 2024 01:41+02:00')
+        const nowUTC = new Date().getTime()
+      
+        let difference = new Date(locoEnd - nowUTC)
+      
+        let timerStateNew = 'running'
+        if (locoStart > nowUTC) {
+            timerStateNew = 'not started'
+        }
+        if (nowUTC > locoEnd) {
+            timerStateNew = 'ended'
+        }
+
+        setDiff(difference)
+        setTimerState(timerStateNew)
     }
-    if (nowUTC > locoEnd) {
-      timerState = 'ended'
-    }
+
+    useEffect(() => {
+        updateTimer()
+    }, [pathname])
+
 
     return (
         <div>
