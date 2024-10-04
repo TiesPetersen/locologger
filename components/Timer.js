@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react'
 
 export default function Timer() {
     const [diff, setDiff] = useState(new Date())
+    const [nowT, setNowT] = useState(new Date())
     const [timerState, setTimerState] = useState('running')
     const pathname = usePathname()
 
@@ -46,6 +47,8 @@ export default function Timer() {
             {timerState === 'ended' ? (
             <h1>loco has ended.</h1>
             ): ''}
+            {nowT.toTimeString()},
+            {nowT.getUTCHours()}
       </div>
     )
 }
