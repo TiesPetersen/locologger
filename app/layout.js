@@ -16,13 +16,18 @@ export default function RootLayout({ children }) {
 
   const locoStart = Date.parse('4 Oct 2024 23:40') // add 1 hour
   const locoEnd = Date.parse('5 Oct 2024 01:00') // add 1 hour
-  const diff = new Date(locoEnd - new Date())
+  const nowTZ = new Date();
+  const nowUtc = Date.UTC(nowTZ.getUTCFullYear(), nowTZ.getUTCMonth(),
+                          nowTZ.getUTCDate(), nowTZ.getUTCHours(),
+                          nowTZ.getUTCMinutes(), nowTZ.getUTCSeconds());
+
+  const diff = new Date(locoEnd - nowUtc)
 
   let timerState = 'running'
-  if (locoStart > new Date()) {
+  if (locoStart > nowUtc) {
     timerState = 'not started'
   }
-  if (new Date() > locoEnd) {
+  if (nowUtc > locoEnd) {
     timerState = 'ended'
   }
 

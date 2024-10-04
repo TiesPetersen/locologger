@@ -8,7 +8,9 @@ export const metadata = {
 export default function LeaderboardPage() {
     return (
         <Main>
-            <LeaderBoard />
+            <div className='pb-16'>
+                <LeaderBoard />
+            </div>
         </Main>
     )
 }

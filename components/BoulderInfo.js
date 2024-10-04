@@ -176,7 +176,7 @@ export default function BoulderInfo(props) {
         <div className={'flex flex-col flex-1 gap-8 p-3 rounded-lg pb-16'}>
             <div className='flex flex-row justify-between items-center'>
                 <h1 className='text-5xl'>{String(boulderNumber).padStart(2, '0')}</h1>
-                <div className={'text-5xl flex flex-row justify-between w-full ' + (String(boulderNumber).split('1').length-1 === 1 ? ' ps-11 ' : '') + (String(boulderNumber).split('1').length-1 === 2 ? ' ps-14 ' : '') + ' ps-9'}>
+                <div className={'text-5xl flex flex-row justify-between w-full ' + (String(boulderNumber).split('1').length-1 === 1 ? ' ps-11 ' : '') + (String(boulderNumber).split('1').length-1 === 2 ? ' ps-14 ' : '') + (String(boulderNumber).split('1').length-1 === 0 ? ' ps-9 ' : '')}>
                     <ScoreButton clickHandler={() => handleScoreChange('T')} active={userDataObj.boulders?.[boulderNumber]?.score?.includes('T') ? true : false} type='T'/>
                     <ScoreButton clickHandler={() => handleScoreChange('Z')} active={userDataObj.boulders?.[boulderNumber]?.score?.includes('Z') ? true : false} type='Z'/>
                     <ScoreButton clickHandler={() => handleScoreChange('F')} active={userDataObj.boulders?.[boulderNumber]?.score?.includes('F') ? true : false} type='F'/>
