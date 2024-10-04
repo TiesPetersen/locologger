@@ -4,7 +4,9 @@ import Footer from "@/components/Footer";
 import Link from "next/link";
 import { AuthProvider } from "../context/AuthContext";
 import Head from "./head";
-import Timer from "@/components/Timer";
+import dynamic from 'next/dynamic'
+
+const Timer = dynamic(()=> import("@/components/Timer"), {ssr: false})
 
 const inter = Inter({ subsets: ['latin']})
 

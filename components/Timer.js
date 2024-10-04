@@ -4,7 +4,7 @@ import React from 'react'
 
 export default function Timer() {
     const locoStart = Date.parse('4 Oct 2024 23:40+02:00')
-    const locoEnd = Date.parse('5 Oct 2024 01:01+02:00')
+    const locoEnd = Date.parse('5 Oct 2024 01:31+02:00')
     const nowUTC = new Date().getTime()
   
     const diff = new Date(locoEnd - nowUTC)
