@@ -15,12 +15,8 @@ export const metadata = {
 export default function RootLayout({ children }) {
 
   const locoStart = Date.parse('4 Oct 2024 23:40')
-  console.log(locoStart)
   const locoEnd = Date.parse('5 Oct 2024 01:00')
-  console.log(locoEnd)
   const nowUTC = new Date().getTime()
-  console.log(new Date())
-  console.log(nowUTC)
 
   const diff = new Date(locoEnd - nowUTC)
 
@@ -49,6 +45,9 @@ export default function RootLayout({ children }) {
         {timerState === 'ended' ? (
           <h1>loco has ended.</h1>
         ): ''}
+        {locoStart},
+        {locoEnd},
+        {nowUTC}
       </div>
     </header>
   )
