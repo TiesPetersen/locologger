@@ -33,7 +33,7 @@ export default function RootLayout({ children }) {
       </Link>
       <div>
         {timerState === 'not started' ? (
-          <h1>loco hasn't started yet.</h1>
+          <h1>loco hasn&apos;t started yet.</h1>
         ) : ''}
         {timerState === 'running' ? (
           <h1>
