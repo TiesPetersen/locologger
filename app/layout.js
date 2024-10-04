@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import Link from "next/link";
 import { AuthProvider } from "../context/AuthContext";
 import Head from "./head";
+import Timer from "@/components/Timer";
 
 const inter = Inter({ subsets: ['latin']})
 
@@ -13,39 +14,12 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-
-  const locoStart = Date.parse('4 Oct 2024 23:40+02:00')
-  const locoEnd = Date.parse('5 Oct 2024 01:00+02:00')
-  const nowUTC = new Date().getTime()
-
-  const diff = new Date(locoEnd - nowUTC)
-
-  let timerState = 'running'
-  if (locoStart > nowUTC) {
-    timerState = 'not started'
-  }
-  if (nowUTC > locoEnd) {
-    timerState = 'ended'
-  }
-
   const header = (
     <header className='p-4 sm:p-6 flex items-center justify-between gap-4 bg-yellow-300 m-3 rounded-xl'>
       <Link href={'/'}>
         <h1 className='font-bold text-lg sm:text-xl '>loco logger.</h1>
       </Link>
-      <div>
-        {timerState === 'not started' ? (
-          <h1>loco hasn&apos;t started yet.</h1>
-        ) : ''}
-        {timerState === 'running' ? (
-          <h1>
-            {diff.getUTCHours()}h {diff.getUTCMinutes()}m left.
-          </h1>
-        ): ''}
-        {timerState === 'ended' ? (
-          <h1>loco has ended.</h1>
-        ): ''}
-      </div>
+      <Timer />
     </header>
   )
 
