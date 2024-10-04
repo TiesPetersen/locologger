@@ -26,7 +26,7 @@ export default function Main(props) {
     }
 
     if (pathname === '/login' && !loading && currentUser) {
-        redirect('/profile')
+        redirect('/boulders')
     }
 
     return (
