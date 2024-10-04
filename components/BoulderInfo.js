@@ -7,11 +7,15 @@ import { doc, setDoc } from 'firebase/firestore'
 import { db } from '@/firebase'
 import Button from './Button'
 import { useRouter } from 'next/navigation'
+import UserCard from './UserCard'
+import { useBoulder } from '@/context/BoulderContext'
+import Loading from './Loading'
 
 export default function BoulderInfo(props) {
     const router = useRouter()
     const { boulderNumber } = props
     const { refreshDataObj, currentUser, userDataObj, setUserDataObj } = useAuth()
+    const { boulders, setBoulders, bouldersLoading } = useBoulder()
     let commentTemp = ''
     if (userDataObj.boulders?.[boulderNumber]?.comment){
         commentTemp = userDataObj.boulders?.[boulderNumber]?.comment
@@ -57,6 +61,25 @@ export default function BoulderInfo(props) {
                     }
                 }
             }, { merge: true })
+
+            const newBoulders = {...boulders}
+            if (!newBoulders?.[boulderNumber]){
+                newBoulders[boulderNumber] = {}
+            }
+            if (!newBoulders?.[boulderNumber]?.[userDataObj.name]) {
+                newBoulders[boulderNumber][userDataObj.name] = ''
+            }
+
+            newBoulders[boulderNumber][userDataObj.name] = newData['boulders'][boulderNumber]['score']
+
+            setBoulders(newBoulders)
+
+            const docRef2 = doc(db, 'boulders', String(boulderNumber))
+            console.log(newBoulders[boulderNumber][userDataObj.name])
+            const res2 = await setDoc(docRef2, {
+                [userDataObj.name]: newBoulders[boulderNumber][userDataObj.name]
+            }, { merge: true })
+
         } catch(err) {
             console.log('Failed to change score', err.message)
         } 
@@ -75,7 +98,11 @@ export default function BoulderInfo(props) {
                 newData['boulders'][boulderNumber]['difficulty'] = ''
             }
 
-            newData['boulders'][boulderNumber]['difficulty'] = number
+            if (newData?.boulders?.[boulderNumber]?.difficulty == number){
+                newData['boulders'][boulderNumber]['difficulty'] = ''
+            } else {
+                newData['boulders'][boulderNumber]['difficulty'] = number
+            }
 
             setUserDataObj(newData)
             
@@ -124,6 +151,27 @@ export default function BoulderInfo(props) {
         }
     }
 
+    if (bouldersLoading && !boulders) {
+        return (
+            <main className='flex-1 flex flex-col p-4 sm:p-8'>
+                <Loading/>
+            </main>  
+        )
+    }
+
+    let noOther = true
+    if (boulders?.[boulderNumber]){
+        for (let i=0; i < Object.keys(boulders?.[boulderNumber]).length; i++){
+            if (Object.keys(boulders?.[boulderNumber])[i] === userDataObj.name){
+                continue
+            }
+
+            if (boulders?.[boulderNumber][Object.keys(boulders?.[boulderNumber])[i]].length > 0){
+                noOther = false
+            }
+        }   
+    }
+
     return (
         <div className={'flex flex-col flex-1 gap-8 p-3 rounded-lg pb-16'}>
             <div className='flex flex-row justify-between items-center'>
@@ -164,6 +212,33 @@ export default function BoulderInfo(props) {
                 )}
 
             </div>
+
+            <div className='bg-slate-800 w-full h-0.5 rounded-full'></div>
+            {noOther ?  (
+                <h1 className='text-slate-400 text-center'>no other climbers managed to get points on the boulder.</h1>
+            ) : (
+                <div className='flex flex-col flex-1 gap-2'>
+                {Object.keys(boulders?.[boulderNumber] || []).map((user, userIndex) => {
+                    if (user === userDataObj.name || boulders?.[boulderNumber][user] === '') {
+                        return
+                    }
+                    let scoreText = ''
+
+                    if (boulders?.[boulderNumber][user].includes('F')) {
+                        scoreText = 'flash'
+                    } else if (boulders?.[boulderNumber][user].includes('T')) {
+                        scoreText = 'top'
+                    } else if (boulders?.[boulderNumber][user].includes('Z')) {
+                        scoreText = 'zone'
+                    }
+
+                    return (
+                        <UserCard key={userIndex} content={scoreText} user={user}/>
+                    )
+                })}
+            </div>
+            )}
+            
         </div>
     )
 }

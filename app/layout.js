@@ -14,11 +14,36 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
 
+  const locoStart = Date.parse('4 Oct 2024 23:40') // add 1 hour
+  const locoEnd = Date.parse('5 Oct 2024 01:00') // add 1 hour
+  const diff = new Date(locoEnd - new Date())
+
+  let timerState = 'running'
+  if (locoStart > new Date()) {
+    timerState = 'not started'
+  }
+  if (new Date() > locoEnd) {
+    timerState = 'ended'
+  }
+
   const header = (
     <header className='p-4 sm:p-6 flex items-center justify-between gap-4 bg-yellow-300 m-3 rounded-xl'>
       <Link href={'/'}>
         <h1 className='font-bold text-lg sm:text-xl '>loco logger.</h1>
       </Link>
+      <div>
+        {timerState === 'not started' ? (
+          <h1>loco hasn't started yet.</h1>
+        ) : ''}
+        {timerState === 'running' ? (
+          <h1>
+            {diff.getUTCHours()}h {diff.getUTCMinutes()}m left.
+          </h1>
+        ): ''}
+        {timerState === 'ended' ? (
+          <h1>loco has ended.</h1>
+        ): ''}
+      </div>
     </header>
   )
 

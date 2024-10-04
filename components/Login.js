@@ -70,14 +70,14 @@ export default function Login() {
             {registering ? (
                 <input value={username} onChange={(e) => {
                     setUsername(e.target.value.replace(/[^a-zA-Z ]/, "").toLowerCase())
-                }} type='text' className={'w-full max-w-[400px] mx-auto px-3 duration-200 hover:border-slate-800 focus:border-slate-800 py-2 sm:py-3 border border-solid rounded-lg outline-none' + (authenticating === 10 ? ' border-red-600 ' : ' border-yellow-300 ')} placeholder='full name' />) : ''
+                }} type='text' className={'text-base w-full max-w-[400px] mx-auto px-3 duration-200 hover:border-slate-800 focus:border-slate-800 py-2 sm:py-3 border border-solid rounded-lg outline-none' + (authenticating === 10 ? ' border-red-600 ' : ' border-yellow-300 ')} placeholder='full name' />) : ''
             }
             <input value={email} onChange={(e) => {
                 setEmail(e.target.value)
-            }} className={'w-full max-w-[400px] mx-auto px-3 duration-200 hover:border-slate-800 focus:border-slate-800 py-2 sm:py-3 border border-solid rounded-lg outline-none' + (authenticating === 11 ? ' border-red-600 ' : ' border-yellow-300 ')} placeholder='email' />
+            }} className={'text-base w-full max-w-[400px] mx-auto px-3 duration-200 hover:border-slate-800 focus:border-slate-800 py-2 sm:py-3 border border-solid rounded-lg outline-none' + (authenticating === 11 ? ' border-red-600 ' : ' border-yellow-300 ')} placeholder='email' />
             <input value={password} onChange={(e) => {
                 setPassword(e.target.value)
-            }} className={'w-full max-w-[400px] mx-auto px-3 duration-200 hover:border-slate-800 focus:border-slate-800 py-2 sm:py-3 border border-solid rounded-lg outline-none ' + (authenticating === 12 ? ' border-red-600 ' : ' border-yellow-300 ')} placeholder='password' type='password'/>
+            }} className={'text-base w-full max-w-[400px] mx-auto px-3 duration-200 hover:border-slate-800 focus:border-slate-800 py-2 sm:py-3 border border-solid rounded-lg outline-none ' + (authenticating === 12 ? ' border-red-600 ' : ' border-yellow-300 ')} placeholder='password' type='password'/>
             <p className='text-slate-400 font-light' >minimum length of each field is 6</p>
             <Button text={authenticating === 1 ? 'submitting.' : 'submit.'} clickHandler={handleSumbit}/>
             <p className='text-center' >{registering ? 'already have an account? ' : "don't have an account? "} <button onClick={() => setRegistering(!registering)}><span className='font-bold'>{registering ? 'log in.' : 'register.'}</span></button></p>
