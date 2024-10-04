@@ -14,20 +14,17 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
 
-  const locoStart = Date.parse('4 Oct 2024 23:40') // add 1 hour
-  const locoEnd = Date.parse('5 Oct 2024 01:00') // add 1 hour
-  const nowTZ = new Date();
-  const nowUtc = Date.UTC(nowTZ.getUTCFullYear(), nowTZ.getUTCMonth(),
-                          nowTZ.getUTCDate(), nowTZ.getUTCHours(),
-                          nowTZ.getUTCMinutes(), nowTZ.getUTCSeconds());
+  const locoStart = Date.parse('4 Oct 2024 23:40')
+  const locoEnd = Date.parse('5 Oct 2024 01:00')
+  const nowUTC = new Date().getTime()
 
-  const diff = new Date(locoEnd - nowUtc)
+  const diff = new Date(locoEnd - nowUTC)
 
   let timerState = 'running'
-  if (locoStart > nowUtc) {
+  if (locoStart > nowUTC) {
     timerState = 'not started'
   }
-  if (nowUtc > locoEnd) {
+  if (nowUTC > locoEnd) {
     timerState = 'ended'
   }
 
