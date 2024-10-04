@@ -5,17 +5,17 @@ import React, { useState, useEffect } from 'react'
 
 
 export default function Timer() {
-    const [diff, setDiff] = useState(new Date())
+    const [diff, setDiff] = useState(0)
     const [nowT, setNowT] = useState(new Date())
     const [timerState, setTimerState] = useState('running')
     const pathname = usePathname()
 
     function updateTimer() {
         const locoStart = Date.parse('4 Oct 2024 23:40+02:00')
-        const locoEnd = Date.parse('5 Oct 2024 01:41+02:00')
+        const locoEnd = Date.parse('5 Oct 2024 02:00+02:00')
         const nowUTC = new Date().getTime()
       
-        let difference = new Date(locoEnd - nowUTC)
+        let difference = new Date(locoEnd - nowUTC).getTime()
       
         let timerStateNew = 'running'
         if (locoStart > nowUTC) {
@@ -41,12 +41,13 @@ export default function Timer() {
             ) : ''}
             {timerState === 'running' ? (
             <h1>
-                {diff.getUTCHours()}h {diff.getUTCMinutes()}m left.
+                {Math.floor(diff/(60000*60)) % 60}h {Math.floor(diff/(60000)) % 60}m left.
             </h1>
             ): ''}
             {timerState === 'ended' ? (
             <h1>loco has ended.</h1>
             ): ''}
+            {diff},
             {nowT.toTimeString()},
             {nowT.getUTCHours()}
       </div>
