@@ -11,18 +11,21 @@ export default function Timer() {
     const pathname = usePathname()
 
     function updateTimer() {
-        const locoStart = Date.parse('4 Oct 2024 23:40+02:00')
-        const locoEnd = Date.parse('5 Oct 2024 02:00+02:00')
+        const locoStart = Date.UTC(2024, 9, 4, 23, 0, 0) // in UTC
+        console.log(locoStart)
+        const locoEnd = Date.UTC(2024, 9, 5, 1, 0, 0) // in UTC
+        console.log(locoEnd)
         const nowUTC = new Date().getTime()
+        console.log(nowUTC)
       
         let difference = new Date(locoEnd - nowUTC).getTime()
       
         let timerStateNew = 'running'
         if (locoStart > nowUTC) {
-            timerStateNew = 'not started'
+            //timerStateNew = 'not started'
         }
         if (nowUTC > locoEnd) {
-            timerStateNew = 'ended'
+            //timerStateNew = 'ended'
         }
 
         setDiff(difference)
