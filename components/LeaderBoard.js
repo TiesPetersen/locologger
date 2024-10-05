@@ -4,9 +4,11 @@ import React from 'react'
 import UserCard from './UserCard'
 import { useBoulder } from '@/context/BoulderContext'
 import Loading from './Loading'
+import { useAuth } from '@/context/AuthContext'
 
 export default function LeaderBoard() {
     const { boulders, bouldersLoading } = useBoulder()
+    const { userDataObj } = useAuth()
 
     if (bouldersLoading && !boulders) {
         return (
@@ -70,7 +72,7 @@ export default function LeaderBoard() {
                 return userScores[b]['tops'] - userScores[a]['tops'] || userScores[b]['zones'] - userScores[a]['zones'] || userScores[b]['flashes'] - userScores[a]['flashes']
             }).map((user, userIndex) => {
                 return (
-                    <UserCard key={userIndex} content={scoreToText(userScores[user])} user={userScores[user]['placement'] + '. ' + user}/>
+                    <UserCard border={user===userDataObj.name ? true : false} key={userIndex} content={scoreToText(userScores[user])} user={userScores[user]['placement'] + '. ' + user}/>
                 )
             })}
         </div>
