@@ -33,14 +33,6 @@ export default function Profile() {
 
     const currentScore = calcScore()
 
-    useEffect(() => {
-        async function refresh() {
-            await refreshDataObj()
-        }
-        
-        refresh()
-    }, [])
-
     return (
         <div className='flex flex-col flex-1 gap-4 items-center'>
             <h1 className='text-xl'>

@@ -41,16 +41,12 @@ export default function Login() {
     
         try {
             if (registering) {
-                console.log("Registering user")
                 const newUser = await signup(email, password)
 
-                console.log(newUser.user)
-
-                console.log("Creating new doc")
                 const docRef = doc(db, 'users', newUser.user.uid)
+                console.log("WRITING users/uid NEW DOC")
                 const res = await setDoc(docRef, {name: username})
             } else {
-                console.log("Logging in user")
                 await login(email, password)
             }
         } catch(err) {

@@ -42,29 +42,22 @@ export default function LeaderBoard() {
         return obj['tops'] + 't ' + obj['zones']+ 'z ' + obj['flashes'] + 'f'
     }
 
-    console.log(userScores)
-
     let prevScore = ''
     let placement = 0
     let offset = 0
     Object.keys(userScores).sort((a,b) => {
         return userScores[b]['tops'] - userScores[a]['tops'] || userScores[b]['zones'] - userScores[a]['zones'] || userScores[b]['flashes'] - userScores[a]['flashes']
     }).map((user, userIndex) => {
-        console.log(user)
         if (!(prevScore === scoreToText(userScores[user]))){
             placement++
             placement += offset
             offset = 0
-            console.log('adding')
         } else {
             offset++
         }
         userScores[user]['placement'] = placement
         prevScore = scoreToText(userScores[user])
     })
-
-    console.log(userScores)
-
 
     return (
         <div className='flex flex-col gap-2'>

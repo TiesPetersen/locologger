@@ -22,15 +22,14 @@ export function BoulderProvider({children}) {
                 // Set the user to our local context state
                 setBouldersLoading(true)
     
-                console.log("Fetching boulders")
                 const docRef = collection(db, 'boulders')
+                console.log("READING boulders")
                 const docSnap = await getDocs(docRef)
                 let bouldersDict = {}
                 const docRes = docSnap.docs.map((doc) => (
                     bouldersDict[doc.id] = {...doc.data()}
                 ))
     
-                console.log(bouldersDict)
     
                 setBoulders(bouldersDict)
             } catch(err) {

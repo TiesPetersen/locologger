@@ -18,30 +18,31 @@ export function AuthProvider({children}) {
  
     // AUTH HANDLERS
     function signup(email, password) {
+        console.log("SIGNUP")
         return createUserWithEmailAndPassword(auth, email, password)
     }
 
     function login(email, password) {
+        console.log("LOGIN")
         return signInWithEmailAndPassword(auth, email, password)
     }
 
     function logout() {
+        console.log("LOGOUT")
         setUserDataObj(null)
         setCurrentUser(null)
         return signOut(auth)
     }
 
     async function refreshDataObj() {
-        console.log("Fetching user data")
         const docRef = doc(db, 'users', currentUser.uid)
+        console.log("READING users/uid")
         const docSnap = await getDoc(docRef)
 
         let firebaseData = {}
         
         if (docSnap.exists()) {
-            console.log('Found user data')
             firebaseData = docSnap.data()
-            console.log(firebaseData)
         }
         setUserDataObj(firebaseData)
     }
@@ -53,22 +54,19 @@ export function AuthProvider({children}) {
                 setLoading(true)
                 setCurrentUser(user)
                 if (!user) {
-                    console.log("No user found")
                     setLoading(false)
                     return
                 }
                 
                 // if user exists, fetch data from firestore database
-                console.log("Fetching user data")
                 const docRef = doc(db, 'users', user.uid)
+                console.log("READING, users/uid")
                 const docSnap = await getDoc(docRef)
 
                 let firebaseData = {}
                 
                 if (docSnap.exists()) {
-                    console.log('Found user data')
                     firebaseData = docSnap.data()
-                    console.log(firebaseData)
                 }
                 setUserDataObj(firebaseData)
             } catch(err) {

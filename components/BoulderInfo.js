@@ -54,6 +54,7 @@ export default function BoulderInfo(props) {
             setUserDataObj(newData)
             
             const docRef = doc(db, 'users', currentUser.uid)
+            console.log("WRITING users/uid/ SCORE")
             const res = await setDoc(docRef, {
                 boulders: {
                     [boulderNumber]: {
@@ -75,7 +76,7 @@ export default function BoulderInfo(props) {
             setBoulders(newBoulders)
 
             const docRef2 = doc(db, 'boulders', String(boulderNumber))
-            console.log(newBoulders[boulderNumber][userDataObj.name])
+            console.log("WRITING boulders/num")
             const res2 = await setDoc(docRef2, {
                 [userDataObj.name]: newBoulders[boulderNumber][userDataObj.name]
             }, { merge: true })
@@ -107,6 +108,7 @@ export default function BoulderInfo(props) {
             setUserDataObj(newData)
             
             const docRef = doc(db, 'users', currentUser.uid)
+            console.log("WRITING users/uid/ DIFFICULTY")
             const res = await setDoc(docRef, {
                 boulders: {
                     [boulderNumber]: {
@@ -137,6 +139,7 @@ export default function BoulderInfo(props) {
             setUserDataObj(newData)
             
             const docRef = doc(db, 'users', currentUser.uid)
+            console.log("WRITING users/uid/ COMMENT")
             const res = await setDoc(docRef, {
                 boulders: {
                     [boulderNumber]: {

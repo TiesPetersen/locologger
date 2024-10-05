@@ -8,17 +8,6 @@ export default function BoulderCard(props) {
     const { refreshDataObj, currentUser, userDataObj, setUserDataObj } = useAuth()
     const { num } = props
 
-    useEffect(() => {
-        async function refresh() {
-            await refreshDataObj()
-        }
-        
-        if (num == 1){
-            refresh()
-        }
-
-    }, [])
-
     let scoreText = ''
 
     if (userDataObj.boulders?.[num]?.score) {
