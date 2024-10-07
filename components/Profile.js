@@ -56,7 +56,7 @@ export default function Profile() {
                 <p>
                     you&apos;ve signed up, and now it&apos;s time to climb hard and log your progress. 
                     LOCO brings you 30 fresh boulders ranging from 4 to 8A. 
-                    whether you're aiming to top them all or just grabbing zones, every attempt counts!
+                    whether you&apos;re aiming to top them all or just grabbing zones, every attempt counts!
                 </p>
                 <h1 className='text-xl font-semibold'>
                     your climbing, your score
