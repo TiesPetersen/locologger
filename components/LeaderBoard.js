@@ -11,7 +11,7 @@ export default function LeaderBoard() {
     const { leaderboard, leaderboardLoading, switchLeaderboard, currentCat } = useLeaderboard()
     const { userDataObj } = useAuth()
 
-    if (leaderboardLoading && !leaderboard) {
+    if (leaderboardLoading) {
         return (
             <main className='flex-1 flex flex-col p-4 sm:p-8'>
                 <Loading/>
@@ -49,7 +49,7 @@ export default function LeaderBoard() {
                     {currentCat}'s leaderboard
                 </h1>
                 <button onClick={() => {switchLeaderboard(); console.log(leaderboard)}} className='pe-2 text-bs'>
-                    switch to {currentCat === 'men' ? 'women' : 'men'}
+                    switch to {currentCat === 'men' ? 'women' : 'men'}'s
                 </button>
             </div>
             {Object.keys(leaderboard).sort((a,b) => {

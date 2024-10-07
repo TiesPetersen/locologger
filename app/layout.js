@@ -11,8 +11,8 @@ const Timer = dynamic(()=> import("@/components/Timer"), {ssr: false})
 const inter = Inter({ subsets: ['latin']})
 
 export const metadata = {
-  title: "LOCO Logger",
-  description: "Keep track of your tops during LOCO, and see how others are performing!",
+  title: "loco logger",
+  description: "keep track of your tops during loco, and see how others are performing!",
 };
 
 export default function RootLayout({ children }) {

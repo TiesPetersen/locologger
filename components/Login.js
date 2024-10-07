@@ -67,15 +67,14 @@ export default function Login() {
         <div className='flex flex-col flex-1 justify-center items-center gap-4'>
             <div>
                 <h3 className='text-4xl sm:text-5xl md:text-6xl text-center'>{registering ? 'register.' : 'log in.'}</h3>
-                <p className='py-1'>{registering ? 'be precise, this info cannot be changed afterwards' : ''}</p>
+                <p className='py-1'>{registering ? 'be precise, this info cannot be changed afterwards.' : ''}</p>
             </div>
             {registering ? (
                 <select onChange={(e) => {
-                    console.log(e.target.value)
                     setCat(e.target.value)
                 }} name='cat' className={'w-full text-base max-w-[400px] mx-auto px-3 duration-200 focus:border-slate-800 py-2 sm:py-3 border border-solid rounded-lg outline-none ' + (authenticating === 13 ? ' border-red-600 ' : ' border-yellow-300 ')}>
-                    <option value='men'>i will participate in the men category</option>
-                    <option value='women'>i will participate in the women category</option>
+                    <option value='men'>i will participate in the men's category</option>
+                    <option value='women'>i will participate in the women's category</option>
                 </select>
             ) : ''}
             {registering ? (
@@ -88,7 +87,9 @@ export default function Login() {
             <input value={password} onChange={(e) => {
                 setPassword(e.target.value)
             }} className={'text-base w-full max-w-[400px] mx-auto px-3 duration-200 focus:border-slate-800 py-2 sm:py-3 border border-solid rounded-lg outline-none ' + (authenticating === 12 ? ' border-red-600 ' : ' border-yellow-300 ')} placeholder='password' type='password'/>
-            <p className='text-slate-400 font-light' >minimum length of each field is 6</p>
+            {registering ? (
+                <p className='text-slate-400 font-light' >minimum length of each field is 6.</p>
+            ): ''}
             <Button text={authenticating === 1 ? 'submitting.' : 'submit.'} clickHandler={handleSumbit}/>
             <p className='text-center' >{registering ? 'already have an account? ' : "don't have an account? "} <button onClick={() => setRegistering(!registering)}><span className='font-bold'>{registering ? 'log in.' : 'register.'}</span></button></p>
         </div>
