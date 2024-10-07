@@ -1,4 +1,5 @@
 import BoulderInfo from "@/components/BoulderInfo"
+import Instruction from "@/components/Instruction"
 import Main from "@/components/Main"
 
 export default function BoulderPage({ params }) {

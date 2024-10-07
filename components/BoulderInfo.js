@@ -11,6 +11,7 @@ import UserCard from './UserCard'
 import { useBoulder } from '@/context/BoulderContext'
 import Loading from './Loading'
 import { useLeaderboard } from '@/context/LeaderboardContext'
+import Instruction from './Instruction'
 
 export default function BoulderInfo(props) {
     const router = useRouter()
@@ -39,7 +40,7 @@ export default function BoulderInfo(props) {
                 newData['boulders'][boulderNumber]['score'] = ''
             }
 
-            const oldScore = newData['boulders'][boulderNumber]['score']
+            const oldScore = newData['boulders'][boulderNumber]['score'].split("").sort().join("");
 
             if (newData['boulders'][boulderNumber]['score'].includes(type)) {
                 alreadyToggled = true
@@ -56,6 +57,15 @@ export default function BoulderInfo(props) {
             }
             if (newData['boulders'][boulderNumber]['score'].includes('F') && !newData['boulders'][boulderNumber]['score'].includes('Z')) {
                 newData['boulders'][boulderNumber]['score'] += 'Z'
+            }
+
+            const newScore = newData['boulders'][boulderNumber]['score'].split("").sort().join("");
+            
+            console.log('----')
+            console.log(newScore)
+            console.log(oldScore)
+            if (newScore === oldScore) {
+                return
             }
 
             setUserDataObj(newData)
@@ -100,7 +110,6 @@ export default function BoulderInfo(props) {
                 newLeaderboard[userDataObj.name] = {T: 0, Z: 0, F: 0}
             }
             
-            const newScore = newBoulders[boulderNumber][userDataObj.name]
             const types = ['T', 'Z', 'F']
 
 
@@ -219,7 +228,8 @@ export default function BoulderInfo(props) {
     }
 
     return (
-        <div className={'flex flex-col flex-1 gap-8 p-3 rounded-lg pb-16'}>
+        <div className={'flex flex-col flex-1 gap-4 p-3 rounded-lg pb-16'}>
+            <Instruction id='topzoneflash' />
             <div className='flex flex-row justify-between items-center'>
                 <h1 className='text-5xl'>{String(boulderNumber).padStart(2, '0')}</h1>
                 <div className={'text-5xl flex flex-row justify-between w-full ' + (String(boulderNumber).split('1').length-1 === 1 ? ' ps-11 ' : '') + (String(boulderNumber).split('1').length-1 === 2 ? ' ps-14 ' : '') + (String(boulderNumber).split('1').length-1 === 0 ? ' ps-9 ' : '')}>
@@ -229,6 +239,7 @@ export default function BoulderInfo(props) {
                 </div>
                 
             </div>
+            <Instruction id='difficulty' />
             <div className='flex flex-row justify-between items-center text-lg'>
                 <h1 className='pb-1'>difficulty</h1>
                 <div className='flex flex-row flex-1 justify-between ps-6'>
@@ -240,9 +251,10 @@ export default function BoulderInfo(props) {
                 </div>
             </div>
             <div className='flex flex-col gap-4'>
+            <Instruction id='comment' />
                 <div className='flex flex-row justify-between items-center text-lg'>
                     <div className='flex flex-col items-center'>
-                        <h1 className=''>comment</h1>
+                        <h1 className=''>notes</h1>
                         <h1 className='text-xs font-light'>(private)</h1>
                     </div>
                     <div className='ps-4 w-full flex flex-col items-end	'>
@@ -253,13 +265,14 @@ export default function BoulderInfo(props) {
                 </div>
                 {(commentField === userDataObj?.boulders?.[boulderNumber]?.comment || (!userDataObj?.boulders?.[boulderNumber]?.comment && !commentField)) ? '' : (
                 <div className='flex flex-col items-end'>
-                    <Button clickHandler={handleCommentChange} text='save comment.'/>
+                    <Button clickHandler={handleCommentChange} text='save notes.'/>
                 </div>
                 )}
 
             </div>
 
             <div className='bg-slate-800 w-full h-0.5 rounded-full'></div>
+            <Instruction id='others' />
             {noOther ?  (
                 <h1 className='text-slate-400 text-center'>no other climbers managed to get points on the boulder.</h1>
             ) : (

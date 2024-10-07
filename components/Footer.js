@@ -19,7 +19,7 @@ export default function Footer() {
             <div className="grid grid-cols-3 gap-4 bg-slate-900 p-4 my-3 mx-4 text-yellow-300 rounded-xl">
                 <Link href={'/boulders'}><h1>boulders</h1></Link>
                 <Link href={'/leaderboard'}><h1>leaderboard</h1></Link>
-                <Link href={'/profile'}><h1>profile</h1></Link>
+                <Link href={'/profile'}><h1>info</h1></Link>
             </div>
     </footer>
     )

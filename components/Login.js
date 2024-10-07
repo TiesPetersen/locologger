@@ -73,8 +73,8 @@ export default function Login() {
                 <select onChange={(e) => {
                     setCat(e.target.value)
                 }} name='cat' className={'w-full text-base max-w-[400px] mx-auto px-3 duration-200 focus:border-slate-800 py-2 sm:py-3 border border-solid rounded-lg outline-none ' + (authenticating === 13 ? ' border-red-600 ' : ' border-yellow-300 ')}>
-                    <option value='men'>i will participate in the men's category</option>
-                    <option value='women'>i will participate in the women's category</option>
+                    <option value='men'>i will participate in the men&apos;s category</option>
+                    <option value='women'>i will participate in the women&apos;s category</option>
                 </select>
             ) : ''}
             {registering ? (

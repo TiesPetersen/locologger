@@ -6,6 +6,7 @@ import { useBoulder } from '@/context/BoulderContext'
 import Loading from './Loading'
 import { useAuth } from '@/context/AuthContext'
 import { useLeaderboard } from '@/context/LeaderboardContext'
+import Instruction from './Instruction'
 
 export default function LeaderBoard() {
     const { leaderboard, leaderboardLoading, switchLeaderboard, currentCat } = useLeaderboard()
@@ -44,12 +45,13 @@ export default function LeaderBoard() {
 
     return (
         <div className='flex flex-col gap-2'>
+            <Instruction id='leaderboard' />
             <div className={'p-2 rounded-lg flex flex-row justify-between items-center bg-slate-800 text-yellow-300'}>
                 <h1 className='ps-2 text-lg font-semibold'>
-                    {currentCat}'s leaderboard
+                    {currentCat}&apos;s leaderboard
                 </h1>
                 <button onClick={() => {switchLeaderboard(); console.log(leaderboard)}} className='pe-2 text-bs'>
-                    switch to {currentCat === 'men' ? 'women' : 'men'}'s
+                    switch to {currentCat === 'men' ? 'women' : 'men'}&apos;s
                 </button>
             </div>
             {Object.keys(leaderboard).sort((a,b) => {

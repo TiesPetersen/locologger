@@ -1,4 +1,5 @@
 import BoulderCard from "@/components/BoulderCard"
+import Instruction from "@/components/Instruction"
 import Main from "@/components/Main"
 
 export default function Boulders() {
@@ -8,6 +9,7 @@ export default function Boulders() {
     return (
         <Main>
             <div className='flex flex-col flex-1 gap-2 pb-16'>
+                <Instruction id='boulders' />
                 {boulderCount.map((boulderNumber, boulderNumberIndex) => {
                     return (
                         <BoulderCard key={boulderNumber} num={boulderNumber}/>

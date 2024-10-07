@@ -19,7 +19,7 @@ export default function RootLayout({ children }) {
   const header = (
     <header className='p-4 sm:p-6 flex items-center justify-between gap-4 bg-yellow-300 m-3 rounded-xl'>
       <Link href={'/'}>
-        <h1 className='font-bold text-lg sm:text-xl '>loco logger.</h1>
+        <h1 className='font-bold text-lg sm:text-xl '>LOCO logger.</h1>
       </Link>
       <Timer />
     </header>
