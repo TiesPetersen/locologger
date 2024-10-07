@@ -120,6 +120,10 @@ export default function BoulderInfo(props) {
                     newLeaderboard[userDataObj.name][types[i]] += 1
                 }
             }
+
+            if ((!oldScore.includes('T') && newScore.includes('T') && !userDataObj?.boulders?.[boulderNumber]?.done) || (oldScore.includes('T') && !newScore.includes('T') && userDataObj?.boulders?.[boulderNumber]?.done)) {
+                hideBoulder(false)
+            }
             
             setLeaderboard(newLeaderboard)
 
@@ -128,7 +132,6 @@ export default function BoulderInfo(props) {
             const res3 = await setDoc(docRef3, {
                 [userDataObj.name]: newLeaderboard[userDataObj.name]
             }, { merge: true })
-
 
         } catch(err) {
             console.log('Failed to change score', err.message)
@@ -208,7 +211,7 @@ export default function BoulderInfo(props) {
         }
     }
 
-    async function hideBoulder() {
+    async function hideBoulder(redirect) {
         try {
 
             const newData = {...userDataObj}
@@ -238,7 +241,9 @@ export default function BoulderInfo(props) {
         } catch(err) {
             console.log('Failed to change done status ', err.message)
         } finally{
-            router.push("/boulders")
+            if (redirect) {
+                router.push("/boulders")
+            }
         }
     }
 
@@ -301,7 +306,7 @@ export default function BoulderInfo(props) {
                 </div>
                 <Instruction id='mark' />
                 <div className={'flex ' + (((commentField === userDataObj?.boulders?.[boulderNumber]?.comment || (!userDataObj?.boulders?.[boulderNumber]?.comment && !commentField))) ? ' flex-col ' : ' flex-row justify-between gap-2' )}>
-                    <Button clickHandler={hideBoulder} text={(userDataObj?.boulders?.[boulderNumber]?.done ? 'unmark as attempted.' : 'mark as attempted.')}/>
+                    <Button clickHandler={() => hideBoulder(true)} text={(userDataObj?.boulders?.[boulderNumber]?.done ? 'unmark as attempted.' : 'mark as attempted.')}/>
                     {((commentField === userDataObj?.boulders?.[boulderNumber]?.comment || (!userDataObj?.boulders?.[boulderNumber]?.comment && !commentField))) ? '' : (
                         <Button clickHandler={handleCommentChange} text='save notes.' />
                     )}
