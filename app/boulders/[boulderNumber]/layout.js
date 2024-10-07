@@ -1,9 +1,12 @@
 import { BoulderProvider } from "@/context/BoulderContext";
+import { LeaderboardProvider } from "@/context/LeaderboardContext";
 
 export default function BoulderLayout({ children }) {
     return (
-        <BoulderProvider>
-            {children}
-        </BoulderProvider>
+        <LeaderboardProvider>
+            <BoulderProvider>
+                {children}
+            </BoulderProvider>
+        </LeaderboardProvider>
     )
 }

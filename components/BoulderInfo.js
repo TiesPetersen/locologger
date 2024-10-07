@@ -10,12 +10,14 @@ import { useRouter } from 'next/navigation'
 import UserCard from './UserCard'
 import { useBoulder } from '@/context/BoulderContext'
 import Loading from './Loading'
+import { useLeaderboard } from '@/context/LeaderboardContext'
 
 export default function BoulderInfo(props) {
     const router = useRouter()
     const { boulderNumber } = props
     const { refreshDataObj, currentUser, userDataObj, setUserDataObj } = useAuth()
     const { boulders, setBoulders, bouldersLoading } = useBoulder()
+    const { leaderboard, setLeaderboard, leaderboardLoading } = useLeaderboard()
     let commentTemp = ''
     if (userDataObj.boulders?.[boulderNumber]?.comment){
         commentTemp = userDataObj.boulders?.[boulderNumber]?.comment
@@ -24,6 +26,8 @@ export default function BoulderInfo(props) {
 
     async function handleScoreChange(type){
         try {
+            let alreadyToggled = false
+
             const newData = {...userDataObj}
             if (!newData?.boulders){
                 newData['boulders'] = {}
@@ -35,7 +39,10 @@ export default function BoulderInfo(props) {
                 newData['boulders'][boulderNumber]['score'] = ''
             }
 
+            const oldScore = newData['boulders'][boulderNumber]['score']
+
             if (newData['boulders'][boulderNumber]['score'].includes(type)) {
+                alreadyToggled = true
                 newData['boulders'][boulderNumber]['score'] = newData['boulders'][boulderNumber]['score'].replace(type, '')
             } else {
                 newData['boulders'][boulderNumber]['score'] += type
@@ -53,6 +60,8 @@ export default function BoulderInfo(props) {
 
             setUserDataObj(newData)
             
+            // USERS
+
             const docRef = doc(db, 'users', currentUser.uid)
             console.log("WRITING users/uid/ SCORE")
             const res = await setDoc(docRef, {
@@ -62,6 +71,8 @@ export default function BoulderInfo(props) {
                     }
                 }
             }, { merge: true })
+
+            // BOULDERS
 
             const newBoulders = {...boulders}
             if (!newBoulders?.[boulderNumber]){
@@ -80,6 +91,38 @@ export default function BoulderInfo(props) {
             const res2 = await setDoc(docRef2, {
                 [userDataObj.name]: newBoulders[boulderNumber][userDataObj.name]
             }, { merge: true })
+
+            // LEADERBOARD
+
+            const newLeaderboard = {...leaderboard}
+            if (!newLeaderboard?.[userDataObj.name]){
+                newLeaderboard[userDataObj.name] = {}
+                newLeaderboard[userDataObj.name] = {T: 0, Z: 0, F: 0}
+            }
+            
+            const newScore = newBoulders[boulderNumber][userDataObj.name]
+            const types = ['T', 'Z', 'F']
+
+
+            for (let i = 0; i < types.length; i++) {
+                if (oldScore.includes(types[i]) && !newScore.includes(types[i])) {
+                    // decrement that type
+                    newLeaderboard[userDataObj.name][types[i]] -= 1
+                }
+                if (!oldScore.includes(types[i]) && newScore.includes(types[i])) {
+                    // increment that type
+                    newLeaderboard[userDataObj.name][types[i]] += 1
+                }
+            }
+            
+            setLeaderboard(newLeaderboard)
+
+            const docRef3 = doc(db, 'leaderboards', userDataObj.cat)
+            console.log("WRITING leaderboards/cat")
+            const res3 = await setDoc(docRef3, {
+                [userDataObj.name]: newLeaderboard[userDataObj.name]
+            }, { merge: true })
+
 
         } catch(err) {
             console.log('Failed to change score', err.message)
@@ -154,7 +197,7 @@ export default function BoulderInfo(props) {
         }
     }
 
-    if (bouldersLoading && !boulders) {
+    if ((bouldersLoading && !boulders) || (leaderboardLoading && !leaderboard)) {
         return (
             <main className='flex-1 flex flex-col p-4 sm:p-8'>
                 <Loading/>

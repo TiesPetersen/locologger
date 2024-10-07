@@ -8,6 +8,7 @@ import { doc, setDoc } from 'firebase/firestore'
 import { db } from '@/firebase'
 
 export default function Login() {
+    const [cat, setCat] = useState('men')
     const [username, setUsername] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -29,6 +30,11 @@ export default function Login() {
             return
         }
 
+        if (registering && (!cat)) {
+            setAuthenticating(13)
+            return
+        }
+
         if (!email || email.length<6 || email.length>40){
             setAuthenticating(11)
             return
@@ -45,7 +51,7 @@ export default function Login() {
 
                 const docRef = doc(db, 'users', newUser.user.uid)
                 console.log("WRITING users/uid NEW DOC")
-                const res = await setDoc(docRef, {name: username})
+                const res = await setDoc(docRef, {name: username, cat: cat})
             } else {
                 await login(email, password)
             }
@@ -64,16 +70,24 @@ export default function Login() {
                 <p className='py-1'>{registering ? 'be precise, this info cannot be changed afterwards' : ''}</p>
             </div>
             {registering ? (
+                <select onChange={(e) => {
+                    console.log(e.target.value)
+                    setCat(e.target.value)
+                }} name='cat' className={'w-full text-base max-w-[400px] mx-auto px-3 duration-200 focus:border-slate-800 py-2 sm:py-3 border border-solid rounded-lg outline-none ' + (authenticating === 13 ? ' border-red-600 ' : ' border-yellow-300 ')}>
+                    <option value='men'>i will participate in the men category</option>
+                    <option value='women'>i will participate in the women category</option>
+                </select>
+            ) : ''}
+            {registering ? (
                 <input value={username} onChange={(e) => {
                     setUsername(e.target.value.replace(/[^a-zA-Z ]/, "").toLowerCase())
-                }} type='text' className={'text-base w-full max-w-[400px] mx-auto px-3 duration-200 hover:border-slate-800 focus:border-slate-800 py-2 sm:py-3 border border-solid rounded-lg outline-none' + (authenticating === 10 ? ' border-red-600 ' : ' border-yellow-300 ')} placeholder='full name' />) : ''
-            }
+                }} type='text' className={'text-base w-full max-w-[400px] mx-auto px-3 duration-200 focus:border-slate-800 py-2 sm:py-3 border border-solid rounded-lg outline-none' + (authenticating === 10 ? ' border-red-600 ' : ' border-yellow-300 ')} placeholder='full name' />) : ''}
             <input value={email} onChange={(e) => {
                 setEmail(e.target.value)
-            }} className={'text-base w-full max-w-[400px] mx-auto px-3 duration-200 hover:border-slate-800 focus:border-slate-800 py-2 sm:py-3 border border-solid rounded-lg outline-none' + (authenticating === 11 ? ' border-red-600 ' : ' border-yellow-300 ')} placeholder='email' />
+            }} className={'text-base w-full max-w-[400px] mx-auto px-3 duration-200 focus:border-slate-800 py-2 sm:py-3 border border-solid rounded-lg outline-none' + (authenticating === 11 ? ' border-red-600 ' : ' border-yellow-300 ')} placeholder='email' />
             <input value={password} onChange={(e) => {
                 setPassword(e.target.value)
-            }} className={'text-base w-full max-w-[400px] mx-auto px-3 duration-200 hover:border-slate-800 focus:border-slate-800 py-2 sm:py-3 border border-solid rounded-lg outline-none ' + (authenticating === 12 ? ' border-red-600 ' : ' border-yellow-300 ')} placeholder='password' type='password'/>
+            }} className={'text-base w-full max-w-[400px] mx-auto px-3 duration-200 focus:border-slate-800 py-2 sm:py-3 border border-solid rounded-lg outline-none ' + (authenticating === 12 ? ' border-red-600 ' : ' border-yellow-300 ')} placeholder='password' type='password'/>
             <p className='text-slate-400 font-light' >minimum length of each field is 6</p>
             <Button text={authenticating === 1 ? 'submitting.' : 'submit.'} clickHandler={handleSumbit}/>
             <p className='text-center' >{registering ? 'already have an account? ' : "don't have an account? "} <button onClick={() => setRegistering(!registering)}><span className='font-bold'>{registering ? 'log in.' : 'register.'}</span></button></p>

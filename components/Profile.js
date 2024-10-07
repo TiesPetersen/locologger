@@ -39,6 +39,9 @@ export default function Profile() {
                 name: {userDataObj.name}
             </h1>
             <h1 className='text-xl'>
+                category: {userDataObj.cat}
+            </h1>
+            <h1 className='text-xl mt-5'>
                 score: {currentScore.tops}t {currentScore.zones}z {currentScore.flashes}f
             </h1>
             <div className='w-full items-center flex flex-col pt-10'>
