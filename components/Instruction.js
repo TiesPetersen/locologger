@@ -15,7 +15,8 @@ const INSTRUCTIONS = {
     others: 'check how other climbers are performing on this boulder below.',
     leaderboard: "keep track of fellow climbers' scores in the leaderboard below. switch between categories by pressing the button below.",
     info: "scroll down to find more information about LOCO.",
-    score: "once loco is over, don't forget to write down your final score on a scorecard and hand it in at the bar!"
+    score: "once loco is over, don't forget to write down your final score on a scorecard and hand it in at the bar!",
+    mark: '(optional) mark boulders as attempted to colour it grey. this makes it clear which boulders you already tried and which boulders you can still work on.'
 }
 
 export default function Instruction(props) {
@@ -50,7 +51,7 @@ export default function Instruction(props) {
     }
 
     return (
-        <div className={'p-2 rounded-lg flex flex-row justify-between items-center border-4 border-solid border-yellow-300'}>
+        <div className={'p-2 rounded-lg flex flex-row justify-between items-center border-2 border-solid border-slate-800'}>
             <div className='flex flex-row flex-1 items-center'>
                 <i className="fa-solid fa-circle-info text-2xl ps-1"></i>
                 <h1 className='text-sm text-wrap px-3 text-justify'>

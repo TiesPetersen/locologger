@@ -27,8 +27,6 @@ export default function BoulderInfo(props) {
 
     async function handleScoreChange(type){
         try {
-            let alreadyToggled = false
-
             const newData = {...userDataObj}
             if (!newData?.boulders){
                 newData['boulders'] = {}
@@ -59,8 +57,8 @@ export default function BoulderInfo(props) {
                 newData['boulders'][boulderNumber]['score'] += 'Z'
             }
 
-            const newScore = newData['boulders'][boulderNumber]['score'].split("").sort().join("");
-            
+            const newScore = newData['boulders'][boulderNumber]['score'].split("").sort().join("")
+
             console.log('----')
             console.log(newScore)
             console.log(oldScore)
@@ -175,6 +173,11 @@ export default function BoulderInfo(props) {
 
     async function handleCommentChange() {
         try {
+
+            if (commentField.length > 2000) {
+                return
+            }
+
             const newData = {...userDataObj}
             if (!newData?.boulders){
                 newData['boulders'] = {}
@@ -201,6 +204,40 @@ export default function BoulderInfo(props) {
             }, { merge: true })
         } catch(err) {
             console.log('Failed to change comment ', err.message)
+        } finally{
+            router.push("/boulders")
+        }
+    }
+
+    async function hideBoulder() {
+        try {
+
+            const newData = {...userDataObj}
+            if (!newData?.boulders){
+                newData['boulders'] = {}
+            }
+            if (!newData?.boulders?.[boulderNumber]){
+                newData['boulders'][boulderNumber] = {}
+            }
+            if (!newData?.boulders?.[boulderNumber]?.done){
+                newData['boulders'][boulderNumber]['done'] = false
+            }
+
+            newData['boulders'][boulderNumber]['done'] = !newData['boulders'][boulderNumber]['done']
+
+            setUserDataObj(newData)
+            
+            const docRef = doc(db, 'users', currentUser.uid)
+            console.log("WRITING users/uid/ DONE")
+            const res = await setDoc(docRef, {
+                boulders: {
+                    [boulderNumber]: {
+                        done: newData['boulders'][boulderNumber]['done']
+                    }
+                }
+            }, { merge: true })
+        } catch(err) {
+            console.log('Failed to change done status ', err.message)
         } finally{
             router.push("/boulders")
         }
@@ -263,11 +300,13 @@ export default function BoulderInfo(props) {
                         }}/>
                     </div>
                 </div>
-                {(commentField === userDataObj?.boulders?.[boulderNumber]?.comment || (!userDataObj?.boulders?.[boulderNumber]?.comment && !commentField)) ? '' : (
-                <div className='flex flex-col items-end'>
-                    <Button clickHandler={handleCommentChange} text='save notes.'/>
+                <Instruction id='mark' />
+                <div className={'flex ' + (((commentField === userDataObj?.boulders?.[boulderNumber]?.comment || (!userDataObj?.boulders?.[boulderNumber]?.comment && !commentField))) ? ' flex-col ' : ' flex-row justify-between gap-2' )}>
+                    <Button clickHandler={hideBoulder} text={(userDataObj?.boulders?.[boulderNumber]?.done ? 'unmark as attempted.' : 'mark as attempted.')}/>
+                    {((commentField === userDataObj?.boulders?.[boulderNumber]?.comment || (!userDataObj?.boulders?.[boulderNumber]?.comment && !commentField))) ? '' : (
+                        <Button clickHandler={handleCommentChange} text='save notes.' />
+                    )}
                 </div>
-                )}
 
             </div>
 
