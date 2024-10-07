@@ -22,7 +22,7 @@ export default function BoulderCard(props) {
 
     return (
         <Link href={'/boulders/' + num}>
-            <div className={'flex flex-col flex-1 gap-2 p-3 rounded-lg hover:border hover:border-slate-800 ' + (userDataObj.boulders?.[num]?.score?.includes('T') ? ' bg-yellow-200 ' : ' bg-yellow-300')}>
+            <div className={'flex flex-col flex-1 gap-2 p-3 rounded-lg hover:border hover:border-slate-800 bg-yellow-300'}>
                 <div className='flex flex-row justify-between items-center text-center'>
                     <h1 className='text-3xl'>{String(num).padStart(2, '0')}</h1>
                     <div className='text-3xl flex-1 text-center'>{scoreText}</div>
