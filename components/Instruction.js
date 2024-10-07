@@ -51,7 +51,7 @@ export default function Instruction(props) {
     }
 
     return (
-        <div className={'p-2 rounded-lg flex flex-row justify-between items-center border-2 border-solid border-slate-800'}>
+        <div className={'p-2 rounded-lg flex flex-row justify-between items-center border-2 border-solid border-slate-800 w-full'}>
             <div className='flex flex-row flex-1 items-center'>
                 <i className="fa-solid fa-circle-info text-2xl ps-1"></i>
                 <h1 className='text-sm text-wrap px-3 text-justify'>
