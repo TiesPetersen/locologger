@@ -41,7 +41,6 @@ export default function BoulderInfo(props) {
             const oldScore = newData['boulders'][boulderNumber]['score'].split("").sort().join("");
 
             if (newData['boulders'][boulderNumber]['score'].includes(type)) {
-                alreadyToggled = true
                 newData['boulders'][boulderNumber]['score'] = newData['boulders'][boulderNumber]['score'].replace(type, '')
             } else {
                 newData['boulders'][boulderNumber]['score'] += type
