@@ -31,7 +31,7 @@ export default function BoulderCard(props) {
                     ) : (<div className='w-10'></div>)}</h1>
                 </div>
                 {userDataObj.boulders?.[num]?.comment ? (
-                    <p className={'bg-yellow-100 p-2 rounded-lg text-wrap ' + (userDataObj?.boulders?.[num]?.done ? ' bg-gray-50 ' : ' bg-yellow-100')}>{userDataObj.boulders?.[num]?.comment}</p>
+                    <p className={'p-2 rounded-lg text-wrap ' + (userDataObj?.boulders?.[num]?.done ? ' bg-gray-50 ' : ' bg-yellow-100')}>{userDataObj.boulders?.[num]?.comment}</p>
                 ) : ''}
             </div>
         </Link>
