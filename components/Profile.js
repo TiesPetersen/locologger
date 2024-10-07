@@ -38,7 +38,7 @@ export default function Profile() {
         <div className='flex flex-col flex-1 gap-4 items-center'>
             <Instruction id='info' />
             <Instruction id='score' />
-            <div className={'p-4 rounded-lg flex flex-col w-full gap-4 justify-between bg-yellow-300'}>
+            <div className={'p-4 rounded-lg flex flex-col w-full gap-4 justify-between text-yellow-300 bg-slate-800'}>
                 <h1 className='text-xl'>
                     name: <span className='font-semibold'>{userDataObj.name}</span>
                 </h1>

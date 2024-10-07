@@ -5,7 +5,7 @@ export default function UserCard(props) {
     const { content, user, border } = props
 
     let podium = false
-    if (user.includes('1. ') || user.includes('2. ') || user.includes('3. ')) {
+    if (user.includes('1. ') || user.includes('2. ') || user.includes('3. ') || !user.includes('.')) {
         podium = true
     }
 

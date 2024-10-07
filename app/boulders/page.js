@@ -10,6 +10,7 @@ export default function Boulders() {
         <Main>
             <div className='flex flex-col flex-1 gap-2 pb-16'>
                 <Instruction id='boulders' />
+                <Instruction id='menuinfo' />
                 {boulderCount.map((boulderNumber, boulderNumberIndex) => {
                     return (
                         <BoulderCard key={boulderNumber} num={boulderNumber}/>

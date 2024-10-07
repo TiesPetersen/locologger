@@ -7,6 +7,7 @@ import React from 'react'
 
 const INSTRUCTIONS = {
     boulders: 'each loco boulder has a unique number. click on a number below to start logging your score for that boulder.',
+    menuinfo: "click on 'info' in the menu on the bottom to get more info about LOCO and LOCO logger.",
     boulderInfo: 'on this page, you can track your score, rate the difficulty, add private notes, and see how others are doing.',
     topzoneflash: 'log your score by pressing T (top), Z (zone) or F (flash).',
     difficulty: '(optional) estimate the difficulty of the boulder and log it below. this helps you get a better idea of which boulders to tackle first.',

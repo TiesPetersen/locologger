@@ -251,7 +251,7 @@ export default function BoulderInfo(props) {
                 </div>
             </div>
             <div className='flex flex-col gap-4'>
-            <Instruction id='comment' />
+                <Instruction id='comment' />
                 <div className='flex flex-row justify-between items-center text-lg'>
                     <div className='flex flex-col items-center'>
                         <h1 className=''>notes</h1>

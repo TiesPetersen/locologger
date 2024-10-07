@@ -9,7 +9,7 @@ export default function Footer() {
     if (pathname === '/' || pathname === '/login') {
         return (
             <div className='p-4 sm:p-8 grid place-items-center'>
-                <p>Made by Ties Petersen.</p>
+                <p>made by Ties Petersen.</p>
             </div>
         )
     }
