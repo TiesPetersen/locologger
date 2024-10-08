@@ -59,8 +59,8 @@ export default function BoulderInfo(props) {
             const newScore = newData['boulders'][boulderNumber]['score'].split("").sort().join("")
 
             console.log('----')
-            console.log(newScore)
             console.log(oldScore)
+            console.log(newScore)
             if (newScore === oldScore) {
                 return
             }

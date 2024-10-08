@@ -11,12 +11,12 @@ const INSTRUCTIONS = {
     boulderInfo: 'on this page, you can track your score, rate the difficulty, add private notes, and see how others are doing.',
     topzoneflash: 'log your score by pressing T (top), Z (zone) or F (flash).',
     difficulty: '(optional) estimate the difficulty of the boulder and log it below. this helps you get a better idea of which boulders to tackle first.',
-    comment: "(optional) add private notes to the boulder below. it's a great way to remember key details about the boulder.",
+    comment: "(optional) add private notes to the boulder below. it's a great way to remember key details about the boulder. don't forget to save the note using the button that appears when you start editing it.",
     others: 'check how other climbers are performing on this boulder below.',
     leaderboard: "keep track of fellow climbers' scores in the leaderboard below. switch between categories by pressing the button below.",
     info: "scroll down to find more information about LOCO.",
     score: "once loco is over, don't forget to write down your final score on a scorecard and hand it in at the bar!",
-    mark: "(optional) cross off boulders to colour them grey. this makes it clear which boulders you still want to work on and which not."
+    mark: "(optional) cross off boulders to colour them grey. this makes it clear which boulders you still want to work on and which not. the boulder will automatically be crossed off if you topped it or flashed it."
 }
 
 export default function Instruction(props) {
