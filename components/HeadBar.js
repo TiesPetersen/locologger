@@ -14,7 +14,10 @@ export default function HeadBar() {
         <header className='p-4 sm:p-6 flex items-center justify-between gap-4 bg-yellow-300 m-3 rounded-xl'>
             {path.includes('/boulders/') ? (
                 <Link href='\boulders' className='ms-1'>
-                    <i className="fa-solid fa-chevron-left text-2xl"></i>
+                    <div className='flex flex-row items-center gap-2'>
+                        <i className="fa-solid fa-chevron-left text-2xl"></i>
+                        <h1 className='text-xl font-semibold'>back</h1>
+                    </div>
                 </Link>
             ) : (
                 <Link href={'/'}>
