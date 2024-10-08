@@ -50,7 +50,7 @@ export default function LeaderBoard() {
                 <h1 className='ps-2 text-lg font-semibold'>
                     {currentCat}&apos;s leaderboard
                 </h1>
-                <button onClick={() => {switchLeaderboard(); console.log(leaderboard)}} className='pe-2 text-bs'>
+                <button onClick={() => {switchLeaderboard()}} className='pe-2 text-bs'>
                     switch to {currentCat === 'men' ? 'women' : 'men'}&apos;s
                 </button>
             </div>
