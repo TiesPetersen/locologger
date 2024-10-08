@@ -306,7 +306,7 @@ export default function BoulderInfo(props) {
                 </div>
                 <Instruction id='mark' />
                 <div className={'flex ' + (((commentField === userDataObj?.boulders?.[boulderNumber]?.comment || (!userDataObj?.boulders?.[boulderNumber]?.comment && !commentField))) ? ' flex-col ' : ' flex-row justify-between gap-2' )}>
-                    <Button clickHandler={() => hideBoulder(true)} text={(userDataObj?.boulders?.[boulderNumber]?.done ? 'more attempts.' : 'no more attempts.')}/>
+                    <Button clickHandler={() => hideBoulder(true)} text={(userDataObj?.boulders?.[boulderNumber]?.done ? 'undo cross off.' : 'cross off.')}/>
                     {((commentField === userDataObj?.boulders?.[boulderNumber]?.comment || (!userDataObj?.boulders?.[boulderNumber]?.comment && !commentField))) ? '' : (
                         <Button clickHandler={handleCommentChange} text='save notes.' />
                     )}

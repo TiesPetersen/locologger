@@ -16,7 +16,7 @@ const INSTRUCTIONS = {
     leaderboard: "keep track of fellow climbers' scores in the leaderboard below. switch between categories by pressing the button below.",
     info: "scroll down to find more information about LOCO.",
     score: "once loco is over, don't forget to write down your final score on a scorecard and hand it in at the bar!",
-    mark: "(optional) mark boulders as 'no more attempts' to colour it grey. this makes it clear which boulders you can still work on and which not."
+    mark: "(optional) cross off boulders to colour them grey. this makes it clear which boulders you can still want to work on and which not."
 }
 
 export default function Instruction(props) {
