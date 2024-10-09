@@ -4,6 +4,8 @@ import { useAuth } from '@/context/AuthContext'
 import Link from 'next/link'
 import React, { useEffect } from 'react'
 
+const MerijnEasterEggText = 'I wanna be yours i wanna be youuuurs (ronaldo voice)'
+
 export default function BoulderCard(props) {
     const { refreshDataObj, currentUser, userDataObj, setUserDataObj } = useAuth()
     const { num } = props
@@ -19,10 +21,18 @@ export default function BoulderCard(props) {
             scoreText = 'zone'
         }
     }
-    
+
+    let merijnEasterEgg = false
+
+    if (userDataObj.boulders?.[num]?.comment) {
+        if (userDataObj.boulders?.[num]?.comment.toLowerCase().includes(MerijnEasterEggText.toLowerCase())) {
+            merijnEasterEgg = true
+        }
+    }
+
     return (
         <Link href={'/boulders/' + num}>
-            <div className={'flex flex-col flex-1 gap-2 p-3 rounded-lg hover:border hover:border-slate-800 ' + (userDataObj?.boulders?.[num]?.done ? ' bg-gray-100 ' : ' bg-yellow-300')}>
+            <div className={'flex flex-col flex-1 gap-2 p-3 rounded-lg hover:border hover:border-slate-800 ' + (merijnEasterEgg ? ' ronaldo ' : (userDataObj?.boulders?.[num]?.done ? ' bg-gray-100 ' : ' bg-yellow-300'))}>
                 <div className='flex flex-row justify-between items-center text-center'>
                     <h1 className='text-3xl'>{String(num).padStart(2, '0')}</h1>
                     <div className='text-3xl flex-1 text-center'>{scoreText}</div>
@@ -31,7 +41,7 @@ export default function BoulderCard(props) {
                     ) : (<div className='w-10'></div>)}</h1>
                 </div>
                 {userDataObj.boulders?.[num]?.comment ? (
-                    <p className={'p-2 rounded-lg text-wrap ' + (userDataObj?.boulders?.[num]?.done ? ' bg-gray-50 ' : ' bg-yellow-100')}>{userDataObj.boulders?.[num]?.comment}</p>
+                    <p className={'p-2 rounded-lg text-wrap ' + (merijnEasterEgg ? ' ronaldonotes ' : (userDataObj?.boulders?.[num]?.done ? ' bg-gray-50 ' : ' bg-yellow-100'))}>{userDataObj.boulders?.[num]?.comment}</p>
                 ) : ''}
             </div>
         </Link>
