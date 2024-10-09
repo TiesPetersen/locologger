@@ -10,8 +10,10 @@ export default function Timer() {
     const pathname = usePathname()
 
     function updateTimer() {
-        const locoStart = Date.UTC(2024, 9, 12, 11, 0, 0) // in UTC
-        const locoEnd = Date.UTC(2024, 9, 12, 16, 30, 0) // in UTC
+        // const locoStart = Date.UTC(2024, 9, 12, 11, 0, 0) // in UTC
+        // const locoEnd = Date.UTC(2024, 9, 12, 16, 30, 0) // in UTC
+        const locoStart = Date.UTC(2024, 9, 9, 19, 30, 0) // 21:30 in UTC
+        const locoEnd = Date.UTC(2024, 9, 9, 21, 30, 0) // 23:30 in UTC
         const nowUTC = new Date().getTime()
       
         let difference = new Date(locoEnd - nowUTC).getTime()
