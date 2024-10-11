@@ -25,7 +25,7 @@ export default function Login() {
     async function handleSumbit() {
         setAuthenticating(1)
 
-        if (registering && (!username || username.length>40 || username.length<6)) {
+        if (registering && (!username || username.length>40 || username.length<6 || !username.includes(' '))) {
             setAuthenticating(10)
             return
         }
@@ -80,10 +80,10 @@ export default function Login() {
             {registering ? (
                 <input value={username} onChange={(e) => {
                     setUsername(e.target.value.replace(/[^a-zA-Z ]/, "").toLowerCase())
-                }} type='text' className={'text-base w-full max-w-[400px] mx-auto px-3 duration-200 focus:border-slate-800 py-2 sm:py-3 border border-solid rounded-lg outline-none' + (authenticating === 10 ? ' border-red-600 ' : ' border-yellow-300 ')} placeholder='full name' />) : ''}
+                }} type='text' className={'text-base w-full max-w-[400px] mx-auto px-3 duration-200 focus:border-slate-800 py-2 sm:py-3 border border-solid rounded-lg outline-none' + (authenticating === 10 ? ' border-red-600 ' : ' border-yellow-300 ')} placeholder='first name + last name' />) : ''}
             <input value={email} onChange={(e) => {
                 setEmail(e.target.value)
-            }} className={'text-base w-full max-w-[400px] mx-auto px-3 duration-200 focus:border-slate-800 py-2 sm:py-3 border border-solid rounded-lg outline-none' + (authenticating === 11 ? ' border-red-600 ' : ' border-yellow-300 ')} placeholder='email' />
+            }} type='email' className={'text-base w-full max-w-[400px] mx-auto px-3 duration-200 focus:border-slate-800 py-2 sm:py-3 border border-solid rounded-lg outline-none' + (authenticating === 11 ? ' border-red-600 ' : ' border-yellow-300 ')} placeholder='email' />
             <input value={password} onChange={(e) => {
                 setPassword(e.target.value)
             }} className={'text-base w-full max-w-[400px] mx-auto px-3 duration-200 focus:border-slate-800 py-2 sm:py-3 border border-solid rounded-lg outline-none ' + (authenticating === 12 ? ' border-red-600 ' : ' border-yellow-300 ')} placeholder='password' type='password'/>
