@@ -5,11 +5,17 @@ import Instruction from "@/components/Instruction"
 import Loading from "@/components/Loading"
 import Main from "@/components/Main"
 import { useEvent } from "@/context/EventContext"
+import { useRouter } from "next/navigation"
 
 export default function Boulders() {
     const { event, eventLoading } = useEvent()
+    const router = useRouter()
 
     let boulderCount = []
+
+    if (!eventLoading && !event) {
+        return <Main></Main>
+    }
 
     if (!eventLoading && event) {
         boulderCount = [...Array(event.numberOfBoulders).keys()].map(i => i+1)

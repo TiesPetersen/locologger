@@ -38,13 +38,19 @@ export function EventProvider({children}) {
             }
         }
 
-        if (!event) {
+        console.log(currentUser)
+
+        if (!event && currentUser) {
             fetchEvent()
-        } else if ((path.includes('/boulders/') || path === '/leaderboard') && event) {
+        } else if ((path.includes('/boulders/') || path === '/leaderboard') && event && currentUser) {
             fetchEvent()
         }
 
-    }, [path])
+        if (!currentUser) {
+            setEventLoading(false)
+        }
+
+    }, [path, currentUser])
 
     const value = {
         event,

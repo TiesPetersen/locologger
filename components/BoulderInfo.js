@@ -9,7 +9,6 @@ import Button from './Button'
 import { useRouter } from 'next/navigation'
 import UserCard from './UserCard'
 import { useEvent } from '@/context/EventContext'
-import Loading from './Loading'
 import Instruction from './Instruction'
 
 export default function BoulderInfo(props) {
