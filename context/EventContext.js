@@ -38,8 +38,6 @@ export function EventProvider({children}) {
             }
         }
 
-        console.log(currentUser)
-
         if (!event && currentUser) {
             fetchEvent()
         } else if ((path.includes('/boulders/') || path === '/leaderboard') && event && currentUser) {
