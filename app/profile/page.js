@@ -1,6 +1,5 @@
 import Main from "@/components/Main"
 import Profile from "@/components/Profile"
-import { redirect } from "next/navigation"
 
 export default function ProfilePage() {
 

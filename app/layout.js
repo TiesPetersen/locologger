@@ -1,10 +1,10 @@
 import { Inter } from "next/font/google"
 import "./globals.css";
 import Footer from "@/components/Footer";
-import Link from "next/link";
 import { AuthProvider } from "../context/AuthContext";
 import Head from "./head";
 import HeadBar from "@/components/HeadBar";
+import { EventProvider } from "@/context/EventContext";
 
 const inter = Inter({ subsets: ['latin']})
 
@@ -18,13 +18,15 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <Head/>
-      <AuthProvider>
-      <body className={'w-full max-w-[600px] mx-auto text-sm sm: text-base min-h-screen flex flex-col text-slate-800 ' + inter.className}>
-        <HeadBar/>
-        {children}
-        <Footer/>
-      </body>
-      </AuthProvider>
+        <AuthProvider>
+        <EventProvider>
+          <body className={'w-full max-w-[600px] mx-auto text-sm sm: text-base min-h-screen flex flex-col text-slate-800 ' + inter.className}>
+            <HeadBar/>
+            {children}
+            <Footer/>
+          </body>
+        </EventProvider>
+        </AuthProvider>
     </html>
   );
 }

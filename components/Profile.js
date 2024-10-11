@@ -4,32 +4,36 @@ import React, { useEffect } from 'react'
 import Button from './Button'
 import { useAuth } from '@/context/AuthContext'
 import Instruction from './Instruction'
+import { useEvent } from '@/context/EventContext'
 
 export default function Profile() {
-    const { logout, refreshDataObj, currentUser, userDataObj, setUserDataObj } = useAuth()
+    const { logout, currentUser, userDataObj, setUserDataObj } = useAuth()
+    const { event } = useEvent()
 
     function calcScore() {
-        let tops = 0
-        let zones = 0
-        let flashes = 0
+        let score = {tops: 0, zones: 0, flashes: 0}
 
-        for (let i = 1; i <= 30; i++) {
-            let score = (userDataObj.boulders?.[i]?.score)
-            if (!score) {continue}
-            if (score.includes('T')) {
-                tops++
-            }
-
-            if (score.includes('Z')) {
-                zones++
-            }
-
-            if (score.includes('F')) {
-                flashes++
-            }
+        for (let boulderNumber=0; boulderNumber < Object.keys(event.boulders).length; boulderNumber++) {
+            Object.keys(event.boulders[Object.keys(event.boulders)[boulderNumber]]).filter((user) => {
+                if (user === userDataObj.name) {
+                    return true
+                }
+                return false
+            }).map((user, userIndex) => {
+                if (event.boulders[Object.keys(event.boulders)[boulderNumber]][user].score === 'F') {
+                    score['flashes'] += 1
+                    score['tops'] += 1
+                    score['zones'] += 1
+                } else if (event.boulders[Object.keys(event.boulders)[boulderNumber]][user].score === 'T') {
+                    score['tops'] += 1
+                    score['zones'] += 1
+                } else if (event.boulders[Object.keys(event.boulders)[boulderNumber]][user].score === 'Z') {
+                    score['zones'] += 1
+                }
+            })
         }
 
-        return {tops, zones, flashes}
+        return {...score}
     }
 
     const currentScore = calcScore()
@@ -43,7 +47,7 @@ export default function Profile() {
                     name: <span className='font-semibold'>{userDataObj.name}</span>
                 </h1>
                 <h1 className='text-xl'>
-                    category: <span className='font-semibold'>{userDataObj.cat}</span>
+                    category: <span className='font-semibold'>{userDataObj.category}</span>
                 </h1>
                 <h1 className='text-xl'>
                     your score: <span className='font-semibold'>{currentScore.tops}t {currentScore.zones}z {currentScore.flashes}f</span>

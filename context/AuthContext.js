@@ -14,7 +14,7 @@ export function useAuth() {
 export function AuthProvider({children}) {
     const [currentUser, setCurrentUser] = useState(null)
     const [userDataObj, setUserDataObj] = useState(null)
-    const [loading, setLoading] = useState(true)
+    const [userLoading, setUserLoading] = useState(true)
  
     // AUTH HANDLERS
     function signup(email, password) {
@@ -34,33 +34,20 @@ export function AuthProvider({children}) {
         return signOut(auth)
     }
 
-    async function refreshDataObj() {
-        const docRef = doc(db, 'users', currentUser.uid)
-        console.log("READING users/uid")
-        const docSnap = await getDoc(docRef)
-
-        let firebaseData = {}
-        
-        if (docSnap.exists()) {
-            firebaseData = docSnap.data()
-        }
-        setUserDataObj(firebaseData)
-    }
-
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async user => {
             try {
                 // Set the user to our local context state
-                setLoading(true)
+                setUserLoading(true)
                 setCurrentUser(user)
                 if (!user) {
-                    setLoading(false)
+                    setUserLoading(false)
                     return
                 }
                 
                 // if user exists, fetch data from firestore database
                 const docRef = doc(db, 'users', user.uid)
-                console.log("READING, users/uid")
+                console.log("READING users/uid, on auth change")
                 const docSnap = await getDoc(docRef)
 
                 let firebaseData = {}
@@ -72,7 +59,7 @@ export function AuthProvider({children}) {
             } catch(err) {
                 console.log(err.message)
             } finally {
-                setLoading(false)
+                setUserLoading(false)
             }
         })
 
@@ -80,11 +67,10 @@ export function AuthProvider({children}) {
     }, [])
 
     const value = {
-        loading,
+        userLoading,
         currentUser,
         userDataObj,
         setUserDataObj,
-        refreshDataObj,
         signup,
         logout,
         login

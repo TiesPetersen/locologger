@@ -8,235 +8,174 @@ import { db } from '@/firebase'
 import Button from './Button'
 import { useRouter } from 'next/navigation'
 import UserCard from './UserCard'
-import { useBoulder } from '@/context/BoulderContext'
+import { useEvent } from '@/context/EventContext'
 import Loading from './Loading'
-import { useLeaderboard } from '@/context/LeaderboardContext'
 import Instruction from './Instruction'
 
 export default function BoulderInfo(props) {
     const router = useRouter()
     const { boulderNumber } = props
-    const { refreshDataObj, currentUser, userDataObj, setUserDataObj } = useAuth()
-    const { boulders, setBoulders, bouldersLoading } = useBoulder()
-    const { leaderboard, setLeaderboard, leaderboardLoading } = useLeaderboard()
-    let commentTemp = ''
-    if (userDataObj.boulders?.[boulderNumber]?.comment){
-        commentTemp = userDataObj.boulders?.[boulderNumber]?.comment
+    const { currentUser, userDataObj, setUserDataObj } = useAuth()
+    const { event, setEvent, eventLoading } = useEvent()
+
+    let noteTemp = ''
+    if (event.boulders[boulderNumber]?.[userDataObj.name]?.note){
+        noteTemp = event.boulders[boulderNumber]?.[userDataObj.name]?.note
     } 
-    const [ commentField, setCommentField] = useState(commentTemp)
+    const [ noteField, setNoteField] = useState(noteTemp)
 
     async function handleScoreChange(type){
         try {
-            const newData = {...userDataObj}
-            if (!newData?.boulders){
-                newData['boulders'] = {}
+            const newEvent = {...event}
+            if (!newEvent.boulders[boulderNumber]) {
+                newEvent.boulders[boulderNumber] = {}
             }
-            if (!newData?.boulders?.[boulderNumber]){
-                newData['boulders'][boulderNumber] = {}
+            if (!newEvent.boulders[boulderNumber][userDataObj.name]) {
+                newEvent.boulders[boulderNumber][userDataObj.name] = {}
             }
-            if (!newData?.boulders?.[boulderNumber]?.score){
-                newData['boulders'][boulderNumber]['score'] = ''
+            if (!newEvent.boulders[boulderNumber][userDataObj.name].score) {
+                newEvent.boulders[boulderNumber][userDataObj.name].score = ''
+                newEvent.boulders[boulderNumber][userDataObj.name].category = ''
             }
 
-            const oldScore = newData['boulders'][boulderNumber]['score'].split("").sort().join("");
-
-            if (newData['boulders'][boulderNumber]['score'].includes(type)) {
-                newData['boulders'][boulderNumber]['score'] = newData['boulders'][boulderNumber]['score'].replace(type, '')
+            if (newEvent.boulders[boulderNumber][userDataObj.name].score === type) {
+                newEvent.boulders[boulderNumber][userDataObj.name].score = ''
             } else {
-                newData['boulders'][boulderNumber]['score'] += type
+                newEvent.boulders[boulderNumber][userDataObj.name].score = type
+                newEvent.boulders[boulderNumber][userDataObj.name].category = userDataObj.category
             }
-
-            if (newData['boulders'][boulderNumber]['score'].includes('T') && !newData['boulders'][boulderNumber]['score'].includes('Z')) {
-                newData['boulders'][boulderNumber]['score'] += 'Z'
-            }
-            if (newData['boulders'][boulderNumber]['score'].includes('F') && !newData['boulders'][boulderNumber]['score'].includes('T')) {
-                newData['boulders'][boulderNumber]['score'] += 'T'
-            }
-            if (newData['boulders'][boulderNumber]['score'].includes('F') && !newData['boulders'][boulderNumber]['score'].includes('Z')) {
-                newData['boulders'][boulderNumber]['score'] += 'Z'
-            }
-
-            const newScore = newData['boulders'][boulderNumber]['score'].split("").sort().join("")
-
-            if (newScore === oldScore) {
-                return
-            }
-
-            setUserDataObj(newData)
             
-            // USERS
+            // TODO what if you select TOP if you already have the flash?
 
-            const docRef = doc(db, 'users', currentUser.uid)
-            console.log("WRITING users/uid/ SCORE")
+            setEvent(newEvent)
+
+            const docRef = doc(db, 'events', process.env.NEXT_PUBLIC_CURRENT_EVENT)
+            console.log("WRITING events/event/boulders/num/name SCORE")
             const res = await setDoc(docRef, {
                 boulders: {
                     [boulderNumber]: {
-                        score: newData['boulders'][boulderNumber]['score']
+                        [userDataObj.name]: {
+                            score: newEvent.boulders[boulderNumber][userDataObj.name].score,
+                            category: newEvent.boulders[boulderNumber][userDataObj.name].category
+                        }
                     }
                 }
-            }, { merge: true })
+            }, { merge: true })            
 
-            // BOULDERS
-
-            const newBoulders = {...boulders}
-            if (!newBoulders?.[boulderNumber]){
-                newBoulders[boulderNumber] = {}
+            // Crossed off if T or F
+            if ((type === 'F' || type === 'T') && !newEvent.boulders[boulderNumber][userDataObj.name].crossed) {
+                handleCrossedChange(false)
             }
-            if (!newBoulders?.[boulderNumber]?.[userDataObj.name]) {
-                newBoulders[boulderNumber][userDataObj.name] = ''
-            }
-
-            newBoulders[boulderNumber][userDataObj.name] = newData['boulders'][boulderNumber]['score']
-
-            setBoulders(newBoulders)
-
-            const docRef2 = doc(db, 'boulders', String(boulderNumber))
-            console.log("WRITING boulders/num")
-            const res2 = await setDoc(docRef2, {
-                [userDataObj.name]: newBoulders[boulderNumber][userDataObj.name]
-            }, { merge: true })
-
-            // LEADERBOARD
-
-            const newLeaderboard = {...leaderboard}
-            if (!newLeaderboard?.[userDataObj.name]){
-                newLeaderboard[userDataObj.name] = {}
-                newLeaderboard[userDataObj.name] = {T: 0, Z: 0, F: 0}
-            }
-            
-            const types = ['T', 'Z', 'F']
-
-
-            for (let i = 0; i < types.length; i++) {
-                if (oldScore.includes(types[i]) && !newScore.includes(types[i])) {
-                    // decrement that type
-                    newLeaderboard[userDataObj.name][types[i]] -= 1
-                }
-                if (!oldScore.includes(types[i]) && newScore.includes(types[i])) {
-                    // increment that type
-                    newLeaderboard[userDataObj.name][types[i]] += 1
-                }
-            }
-
-            if ((!oldScore.includes('T') && newScore.includes('T') && !userDataObj?.boulders?.[boulderNumber]?.done) || (oldScore.includes('T') && !newScore.includes('T') && userDataObj?.boulders?.[boulderNumber]?.done)) {
-                hideBoulder(false)
-            }
-            
-            setLeaderboard(newLeaderboard)
-
-            const docRef3 = doc(db, 'leaderboards', userDataObj.cat)
-            console.log("WRITING leaderboards/cat")
-            const res3 = await setDoc(docRef3, {
-                [userDataObj.name]: newLeaderboard[userDataObj.name]
-            }, { merge: true })
 
         } catch(err) {
-            console.log('Failed to change score', err.message)
+            console.log('Failed to change score ', err.message)
         } 
     }
 
     async function handleDifficultyChange(number) {
         try {
-            const newData = {...userDataObj}
-            if (!newData?.boulders){
-                newData['boulders'] = {}
+            const newEvent = {...event}
+            if (!newEvent.boulders[boulderNumber]) {
+                newEvent.boulders[boulderNumber] = {}
             }
-            if (!newData?.boulders?.[boulderNumber]){
-                newData['boulders'][boulderNumber] = {}
+            if (!newEvent.boulders[boulderNumber][userDataObj.name]) {
+                newEvent.boulders[boulderNumber][userDataObj.name] = {}
             }
-            if (!newData?.boulders?.[boulderNumber]?.difficulty){
-                newData['boulders'][boulderNumber]['difficulty'] = ''
+            if (!newEvent.boulders[boulderNumber][userDataObj.name].difficulty) {
+                newEvent.boulders[boulderNumber][userDataObj.name].difficulty = ''
             }
 
-            if (newData?.boulders?.[boulderNumber]?.difficulty == number){
-                newData['boulders'][boulderNumber]['difficulty'] = ''
+            if (newEvent.boulders[boulderNumber][userDataObj.name].difficulty === number) {
+                newEvent.boulders[boulderNumber][userDataObj.name].difficulty = ''
             } else {
-                newData['boulders'][boulderNumber]['difficulty'] = number
+                newEvent.boulders[boulderNumber][userDataObj.name].difficulty = number
             }
-
-            setUserDataObj(newData)
             
-            const docRef = doc(db, 'users', currentUser.uid)
-            console.log("WRITING users/uid/ DIFFICULTY")
+            setEvent(newEvent)
+
+            const docRef = doc(db, 'events', process.env.NEXT_PUBLIC_CURRENT_EVENT)
+            console.log("WRITING events/event/boulders/num/name DIFFICULTY")
             const res = await setDoc(docRef, {
                 boulders: {
                     [boulderNumber]: {
-                        difficulty: newData['boulders'][boulderNumber]['difficulty']
+                        [userDataObj.name]: {
+                            difficulty: newEvent.boulders[boulderNumber][userDataObj.name].difficulty
+                        }
                     }
                 }
-            }, { merge: true })
+            }, { merge: true })            
+
         } catch(err) {
             console.log('Failed to change difficulty ', err.message)
         } 
     }
 
-    async function handleCommentChange() {
+    async function handleNoteChange() {
         try {
-
-            if (commentField.length > 2000) {
-                return
+            const newEvent = {...event}
+            if (!newEvent.boulders[boulderNumber]) {
+                newEvent.boulders[boulderNumber] = {}
+            }
+            if (!newEvent.boulders[boulderNumber][userDataObj.name]) {
+                newEvent.boulders[boulderNumber][userDataObj.name] = {}
+            }
+            if (!newEvent.boulders[boulderNumber][userDataObj.name].note) {
+                newEvent.boulders[boulderNumber][userDataObj.name].note = ''
             }
 
-            const newData = {...userDataObj}
-            if (!newData?.boulders){
-                newData['boulders'] = {}
-            }
-            if (!newData?.boulders?.[boulderNumber]){
-                newData['boulders'][boulderNumber] = {}
-            }
-            if (!newData?.boulders?.[boulderNumber]?.comment){
-                newData['boulders'][boulderNumber]['comment'] = ''
-            }
+            newEvent.boulders[boulderNumber][userDataObj.name].note = noteField
 
-            newData['boulders'][boulderNumber]['comment'] = commentField
+            setEvent(newEvent)
 
-            setUserDataObj(newData)
-            
-            const docRef = doc(db, 'users', currentUser.uid)
-            console.log("WRITING users/uid/ COMMENT")
+            const docRef = doc(db, 'events', process.env.NEXT_PUBLIC_CURRENT_EVENT)
+            console.log("WRITING events/event/boulders/num/name NOTE")
             const res = await setDoc(docRef, {
                 boulders: {
                     [boulderNumber]: {
-                        comment: newData['boulders'][boulderNumber]['comment']
+                        [userDataObj.name]: {
+                            note: newEvent.boulders[boulderNumber][userDataObj.name].note
+                        }
                     }
                 }
-            }, { merge: true })
+            }, { merge: true })            
+
         } catch(err) {
-            console.log('Failed to change comment ', err.message)
-        } finally{
+            console.log('Failed to change note ', err.message)
+        } finally {
             router.push("/boulders")
         }
     }
 
-    async function hideBoulder(redirect) {
+    async function handleCrossedChange(redirect) {
         try {
-
-            const newData = {...userDataObj}
-            if (!newData?.boulders){
-                newData['boulders'] = {}
+            const newEvent = {...event}
+            if (!newEvent.boulders[boulderNumber]) {
+                newEvent.boulders[boulderNumber] = {}
             }
-            if (!newData?.boulders?.[boulderNumber]){
-                newData['boulders'][boulderNumber] = {}
+            if (!newEvent.boulders[boulderNumber][userDataObj.name]) {
+                newEvent.boulders[boulderNumber][userDataObj.name] = {}
             }
-            if (!newData?.boulders?.[boulderNumber]?.done){
-                newData['boulders'][boulderNumber]['done'] = false
+            if (!newEvent.boulders[boulderNumber][userDataObj.name].crossed) {
+                newEvent.boulders[boulderNumber][userDataObj.name].crossed = false
             }
 
-            newData['boulders'][boulderNumber]['done'] = !newData['boulders'][boulderNumber]['done']
+            newEvent.boulders[boulderNumber][userDataObj.name].crossed = !newEvent.boulders[boulderNumber][userDataObj.name].crossed
 
-            setUserDataObj(newData)
-            
-            const docRef = doc(db, 'users', currentUser.uid)
-            console.log("WRITING users/uid/ DONE")
+            setEvent(newEvent)
+
+            const docRef = doc(db, 'events', process.env.NEXT_PUBLIC_CURRENT_EVENT)
+            console.log("WRITING events/event/boulders/num/name CROSSED")
             const res = await setDoc(docRef, {
                 boulders: {
                     [boulderNumber]: {
-                        done: newData['boulders'][boulderNumber]['done']
+                        [userDataObj.name]: {
+                            crossed: newEvent.boulders[boulderNumber][userDataObj.name].crossed
+                        }
                     }
                 }
-            }, { merge: true })
+            }, { merge: true })            
         } catch(err) {
-            console.log('Failed to change done status ', err.message)
+            console.log('Failed to change crossed ', err.message)
         } finally{
             if (redirect) {
                 router.push("/boulders")
@@ -244,25 +183,30 @@ export default function BoulderInfo(props) {
         }
     }
 
-    if ((bouldersLoading && !boulders) || (leaderboardLoading && !leaderboard)) {
-        return (
-            <main className='flex-1 flex flex-col p-4 sm:p-8'>
-                <Loading/>
-            </main>  
-        )
-    }
-
     let noOther = true
-    if (boulders?.[boulderNumber]){
-        for (let i=0; i < Object.keys(boulders?.[boulderNumber]).length; i++){
-            if (Object.keys(boulders?.[boulderNumber])[i] === userDataObj.name){
+    if (event.boulders[boulderNumber]){
+        for (let i=0; i < Object.keys(event.boulders[boulderNumber]).length; i++){
+            if (Object.keys(event.boulders[boulderNumber])[i] === userDataObj.name){
                 continue
             }
 
-            if (boulders?.[boulderNumber][Object.keys(boulders?.[boulderNumber])[i]].length > 0){
+            if (event.boulders[boulderNumber][Object.keys(event.boulders[boulderNumber])[i]].score.length > 0){
                 noOther = false
             }
         }   
+    }
+
+    let userScoreElements = ''
+    if (event.boulders[boulderNumber]?.[userDataObj.name]?.score) {
+        if (event.boulders[boulderNumber]?.[userDataObj.name]?.score === 'F') {
+            userScoreElements += 'F'
+        }
+        if (event.boulders[boulderNumber]?.[userDataObj.name]?.score === 'T' || event.boulders[boulderNumber]?.[userDataObj.name]?.score === 'F') {
+            userScoreElements += 'T'
+        }
+        if (event.boulders[boulderNumber]?.[userDataObj.name]?.score === 'Z' || event.boulders[boulderNumber]?.[userDataObj.name]?.score === 'T' || event.boulders[boulderNumber]?.[userDataObj.name]?.score === 'F') {
+            userScoreElements += 'Z'
+        }
     }
 
     return (
@@ -271,41 +215,40 @@ export default function BoulderInfo(props) {
             <div className='flex flex-row justify-between items-center'>
                 <h1 className='text-5xl'>{String(boulderNumber).padStart(2, '0')}</h1>
                 <div className={'text-5xl flex flex-row justify-between w-full ' + (String(boulderNumber).split('1').length-1 === 1 ? ' ps-11 ' : '') + (String(boulderNumber).split('1').length-1 === 2 ? ' ps-14 ' : '') + (String(boulderNumber).split('1').length-1 === 0 ? ' ps-9 ' : '')}>
-                    <ScoreButton clickHandler={() => handleScoreChange('T')} active={userDataObj.boulders?.[boulderNumber]?.score?.includes('T') ? true : false} type='T'/>
-                    <ScoreButton clickHandler={() => handleScoreChange('Z')} active={userDataObj.boulders?.[boulderNumber]?.score?.includes('Z') ? true : false} type='Z'/>
-                    <ScoreButton clickHandler={() => handleScoreChange('F')} active={userDataObj.boulders?.[boulderNumber]?.score?.includes('F') ? true : false} type='F'/>
+                    <ScoreButton clickHandler={() => handleScoreChange('T')} active={userScoreElements.includes('T') ? true : false} type='T'/>
+                    <ScoreButton clickHandler={() => handleScoreChange('Z')} active={userScoreElements.includes('Z') ? true : false} type='Z'/>
+                    <ScoreButton clickHandler={() => handleScoreChange('F')} active={userScoreElements.includes('F') ? true : false} type='F'/>
                 </div>
-                
             </div>
             <Instruction id='difficulty' />
             <div className='flex flex-row justify-between items-center text-lg'>
                 <h1 className='pb-1'>difficulty</h1>
                 <div className='flex flex-row flex-1 justify-between ps-6'>
-                    <ScoreButton clickHandler={() => handleDifficultyChange(1)} active={userDataObj.boulders?.[boulderNumber]?.difficulty === 1 ? true : false} type='1'/>
-                    <ScoreButton clickHandler={() => handleDifficultyChange(2)} active={userDataObj.boulders?.[boulderNumber]?.difficulty === 2 ? true : false} type='2'/>
-                    <ScoreButton clickHandler={() => handleDifficultyChange(3)} active={userDataObj.boulders?.[boulderNumber]?.difficulty === 3 ? true : false} type='3'/>
-                    <ScoreButton clickHandler={() => handleDifficultyChange(4)} active={userDataObj.boulders?.[boulderNumber]?.difficulty === 4 ? true : false} type='4'/>
-                    <ScoreButton clickHandler={() => handleDifficultyChange(5)} active={userDataObj.boulders?.[boulderNumber]?.difficulty === 5 ? true : false} type='5'/>
+                    <ScoreButton clickHandler={() => handleDifficultyChange(1)} active={event.boulders[boulderNumber]?.[userDataObj.name]?.difficulty === 1 ? true : false} type='1'/>
+                    <ScoreButton clickHandler={() => handleDifficultyChange(2)} active={event.boulders[boulderNumber]?.[userDataObj.name]?.difficulty === 2 ? true : false} type='2'/>
+                    <ScoreButton clickHandler={() => handleDifficultyChange(3)} active={event.boulders[boulderNumber]?.[userDataObj.name]?.difficulty === 3 ? true : false} type='3'/>
+                    <ScoreButton clickHandler={() => handleDifficultyChange(4)} active={event.boulders[boulderNumber]?.[userDataObj.name]?.difficulty === 4 ? true : false} type='4'/>
+                    <ScoreButton clickHandler={() => handleDifficultyChange(5)} active={event.boulders[boulderNumber]?.[userDataObj.name]?.difficulty === 5 ? true : false} type='5'/>
                 </div>
             </div>
             <div className='flex flex-col gap-4'>
-                <Instruction id='comment' />
+                <Instruction id='note' />
                 <div className='flex flex-row justify-between items-center text-lg'>
                     <div className='flex flex-col items-center'>
                         <h1 className=''>notes</h1>
                         <h1 className='text-xs font-light'>(private)</h1>
                     </div>
                     <div className='ps-4 w-full flex flex-col items-end	'>
-                        <textarea type='text' className='bg-yellow-100 p-3 rounded-lg w-full h-48'  value={commentField} onChange={(e) => {
-                            setCommentField(e.target.value)
+                        <textarea type='text' className='bg-yellow-100 p-3 rounded-lg w-full h-48'  value={noteField} onChange={(e) => {
+                            setNoteField(e.target.value)
                         }}/>
                     </div>
                 </div>
                 <Instruction id='mark' />
-                <div className={'flex ' + (((commentField === userDataObj?.boulders?.[boulderNumber]?.comment || (!userDataObj?.boulders?.[boulderNumber]?.comment && !commentField))) ? ' flex-col ' : ' flex-row justify-between gap-2' )}>
-                    <Button clickHandler={() => hideBoulder(true)} text={(userDataObj?.boulders?.[boulderNumber]?.done ? 'undo cross off.' : 'cross off.')}/>
-                    {((commentField === userDataObj?.boulders?.[boulderNumber]?.comment || (!userDataObj?.boulders?.[boulderNumber]?.comment && !commentField))) ? '' : (
-                        <Button clickHandler={handleCommentChange} text='save notes.' />
+                <div className={'flex ' + (((noteField === event.boulders[boulderNumber]?.[userDataObj.name]?.note || (!event.boulders[boulderNumber]?.[userDataObj.name]?.note && !noteField))) ? ' flex-col ' : ' flex-row justify-between gap-2' )}>
+                    <Button clickHandler={() => handleCrossedChange(true)} text={(event.boulders[boulderNumber]?.[userDataObj.name]?.crossed ? 'undo cross off.' : 'cross off.')}/>
+                    {((noteField === event.boulders[boulderNumber]?.[userDataObj.name]?.note || (!event.boulders[boulderNumber]?.[userDataObj.name]?.note && !noteField))) ? '' : (
+                        <Button clickHandler={handleNoteChange} text='save notes.' />
                     )}
                 </div>
 
@@ -317,17 +260,17 @@ export default function BoulderInfo(props) {
                 <h1 className='text-slate-400 text-center'>no other climbers managed to get points on the boulder.</h1>
             ) : (
                 <div className='flex flex-col flex-1 gap-2'>
-                {Object.keys(boulders?.[boulderNumber] || []).map((user, userIndex) => {
-                    if (user === userDataObj.name || boulders?.[boulderNumber][user] === '') {
+                {Object.keys(event.boulders[boulderNumber] || []).map((user, userIndex) => {
+                    if (user === userDataObj.name || event.boulders[boulderNumber][user].score === '') {
                         return
                     }
                     let scoreText = ''
 
-                    if (boulders?.[boulderNumber][user].includes('F')) {
+                    if (event.boulders[boulderNumber][user].score === 'F') {
                         scoreText = 'flash'
-                    } else if (boulders?.[boulderNumber][user].includes('T')) {
+                    } else if (event.boulders[boulderNumber][user].score === 'T') {
                         scoreText = 'top'
-                    } else if (boulders?.[boulderNumber][user].includes('Z')) {
+                    } else if (event.boulders[boulderNumber][user].score === 'Z') {
                         scoreText = 'zone'
                     }
 

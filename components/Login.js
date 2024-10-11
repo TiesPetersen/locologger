@@ -8,7 +8,7 @@ import { doc, setDoc } from 'firebase/firestore'
 import { db } from '@/firebase'
 
 export default function Login() {
-    const [cat, setCat] = useState('men')
+    const [category, setCategory] = useState('men')
     const [username, setUsername] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -30,7 +30,7 @@ export default function Login() {
             return
         }
 
-        if (registering && (!cat)) {
+        if (registering && (!category)) {
             setAuthenticating(13)
             return
         }
@@ -51,7 +51,7 @@ export default function Login() {
 
                 const docRef = doc(db, 'users', newUser.user.uid)
                 console.log("WRITING users/uid NEW DOC")
-                const res = await setDoc(docRef, {name: username, cat: cat})
+                const res = await setDoc(docRef, {name: username, category: category})
             } else {
                 await login(email, password)
             }
@@ -71,8 +71,8 @@ export default function Login() {
             </div>
             {registering ? (
                 <select onChange={(e) => {
-                    setCat(e.target.value)
-                }} name='cat' className={'w-full text-base max-w-[400px] mx-auto px-3 duration-200 focus:border-slate-800 py-2 sm:py-3 border border-solid rounded-lg outline-none ' + (authenticating === 13 ? ' border-red-600 ' : ' border-yellow-300 ')}>
+                    setCategory(e.target.value)
+                }} name='category' className={'w-full text-base max-w-[400px] mx-auto px-3 duration-200 focus:border-slate-800 py-2 sm:py-3 border border-solid rounded-lg outline-none ' + (authenticating === 13 ? ' border-red-600 ' : ' border-yellow-300 ')}>
                     <option value='men'>i will participate in the men&apos;s category</option>
                     <option value='women'>i will participate in the women&apos;s category</option>
                 </select>

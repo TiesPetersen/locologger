@@ -5,10 +5,14 @@ import { redirect, usePathname } from 'next/navigation'
 import React , { useEffect, useState } from 'react'
 import Loading from './Loading'
 import { useRouter } from 'next/navigation'
+import { useEvent } from '@/context/EventContext'
 
 export default function Main(props) {
     const {children} = props
-    const { loading, currentUser, userDataObj} = useAuth()
+    
+    const { userLoading, currentUser, userDataObj} = useAuth()
+    const { event, eventLoading } = useEvent()
+
     const pathname = usePathname()
     const router = useRouter()
     const [ lastHiddenTime, setLastHiddenTime ] = useState(null)
@@ -36,7 +40,7 @@ export default function Main(props) {
 
 
     // Load until user is loaded, expect on the landing page
-    if (!(pathname === '/') && loading) {
+    if (!(pathname === '/') && ((userLoading || eventLoading) || !event)) {
         return (
             <main className='flex-1 flex flex-col p-4 sm:p-8'>
                 <Loading/>
@@ -45,11 +49,11 @@ export default function Main(props) {
     }
 
     // Redirect when accessing userdependent pages after user is loaded and is not logged in
-    if (!(pathname === '/login' || pathname === '/') && !loading && !currentUser) {
+    if (!(pathname === '/login' || pathname === '/') && !userLoading && !currentUser) {
         redirect('/login')
     }
 
-    if (pathname === '/login' && !loading && currentUser) {
+    if (pathname === '/login' && !userLoading && currentUser) {
         redirect('/boulders')
     }
 
