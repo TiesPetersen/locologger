@@ -189,7 +189,7 @@ export default function BoulderInfo(props) {
                 continue
             }
 
-            if (event.boulders[boulderNumber][Object.keys(event.boulders[boulderNumber])[i]].score.length > 0){
+            if (event.boulders[boulderNumber][Object.keys(event.boulders[boulderNumber])[i]].score?.length > 0){
                 noOther = false
             }
         }   
