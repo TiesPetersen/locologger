@@ -10,5 +10,5 @@ with loco logger, you can easily track your personal score during loco while kee
 created using nextjs, reactjs, firebase  
 
 ## by.
-ties petersen
-[oct 2024]
+Ties Petersen
+[October 2024]
